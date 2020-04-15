@@ -34,8 +34,7 @@ void State::test(Game &game)
 	vector<Person*> sick,non_sick;
 	for(Person* p:active_people)
 	{
-		if(p->isDead()) continue; //don't test bad people, will update in game state later
-		assert(!p->isDetected()); //these people must be undetected at this point
+		if(p->isDead()||p->isDetected()) continue; //don't test bad people, will update in game state later
 		if(p->isFit()) non_sick.push_back(p);
 		else sick.push_back(p);
 	}

@@ -466,7 +466,8 @@ void Game::upgradeTest(const vector<string> &word_list)
 		return ;
 	}
 	current_state->addTestingKits(number);
-	money-=400LL*number;
+	testing_kit_limit-=number;
+	money-=TESTING_KIT_COST*1LL*number;
 	cout<<"Number of testing kits of state "<<char(toupper(c))<<" is increased by "<<number<<".\n";
 	cout<<"Budget remaining: $"<<money<<'\n';
 }
@@ -512,7 +513,8 @@ void Game::upgradeMedical(const vector<string> &word_list)
 		return ;
 	}
 	current_state->addMedicalCap(number);
-	money-=600LL*number;
+	medical_capacity_limit-=number;
+	money-=MEDICAL_CAPACITY_COST*1LL*number;
 	cout<<"Medical capacity of state "<<char(toupper(c))<<" is increased by "<<number<<".\n";
 	cout<<"Budget remaining: $"<<money<<'\n';
 }
@@ -837,12 +839,11 @@ long long Game::getScanLimitUpgradeCost(int level)
 
 int Game::upgradeTestMax(const State *s)
 {
-	return min(100LL,money/400);
 }
 
 int Game::upgradeMedicalMax(const State *s)
 {
-	return min(100LL,money/600);
+	return min(1LL*medical_capacity_limit,money/MEDICAL_CAPACITY_COST);
 }
 	
 int Game::ignoreMax(const State *s)
@@ -856,54 +857,98 @@ int Game::getMaxPatientIgnore(const Time &t)
 	return int(9.4*pow(double(cycle_count),1.6));
 }
 
+int Game::getMaxMedicalCapacityUpgrade(const Time &t)
+{
+	int cycle_count = t.toHours()/MEDICAL_CAPACITY_RECHARGE_TIME;
+	return int(4.0*pow(double(cycle_count),1.35) + 15.0*cycle_count);
+}
+
+int Game::getMaxTestingKitUpgrade(const Time &t)
+{
+	int cycle_count = t.toHours()/TESTING_KIT_RECHARGE_TIME;
+	return int(10.0*pow(double(cycle_count),1.35) + 30.0*cycle_count);
+}
+	
 void Game::upgradeAccuracyToolTip(const vector<string> &word_list)
 {
-	cout<<"Upgrade Accuracy Tooltip under construction.\n";	
+	cout<<"You can upgrade test accuracy by at most "<<upgradeAccuracyMax()<<"%.\n";
+	if(testing_accuracy<1.0-1e-10) cout<<"Cost to upgrade by 1%: $"<<getAccuracyUpgradeCost(round(testing_accuracy*100.0)+1)-getAccuracyUpgradeCost(round(testing_accuracy*100.0))<<'\n';
 }
 	
 void Game::upgradeScanToolTip(const vector<string> &word_list)
 {
-	cout<<"Upgrade Scan Tooltip under construction.\n";
+	cout<<"You can increase scan limit by at most "<<upgradeScanMax()<<".\n";
+	if(scan_limit<MAX_SCAN_LIMIT) cout<<"Cost to increase scan limit by 1: $"<<getScanLimitUpgradeCost(scan_limit+1)-getScanLimitUpgradeCost(scan_limit)<<'\n';
 }
 	
 void Game::upgradeTestToolTip(const vector<string> &word_list)
 {
-	cout<<"Upgrade Test Tooltip under construction.\n";
+	cout<<"You can purchase at most "<<upgradeTestMax(state_list[0])<<" testing kits.\n";
+	cout<<"Cost per testing kit = $"<<TESTING_KIT_COST<<'\n';
 }
 
 void Game::upgradeMedicalToolTip(const vector<string> &word_list)
 {
-	cout<<"Upgrade Medical Tooltip under construction.\n";
+	cout<<"You can increase medical capacity by at most "<<upgradeMedicalMax(state_list[0])<<".\n";
+	cout<<"Cost per medical capacity = $"<<MEDICAL_CAPACITY_COST<<'\n';
 }
 
 void Game::ignoreToolTip(const vector<string> &word_list)
 {
-	cout<<"Ignore Tooltip under construction.\n";
+	cout<<"You can ignore at most "<<patient_ignore_remaining<<" patients in total.\n";
 }
 
 void Game::scanToolTip(const vector<string> &word_list)
 {
-	cout<<"Scan Tooltip under construction.\n";
+	cout<<"Number of scans remaining: "<<scans_remaining<<'\n';
+	cout<<"Number of tests per scan: "<<scan_limit<<'\n';
 }
 
 void Game::lockdownToolTip(const vector<string> &word_list)
 {
-	cout<<"Lockdown Control Tooltip under construction.\n";
+	cout<<"Number of state lockdown toggles remaining: "<<state_lockdown_remaining<<'\n';
+	cout<<"Number of region lockdown toggles remaining: "<<region_lockdown_remaining<<'\n';
 }
 
 void Game::unlockdownToolTip(const vector<string> &word_list)
 {
-	cout<<"Unlockdown Control Tooltip under construction.\n";
+	cout<<"Number of state lockdown toggles remaining: "<<state_lockdown_remaining<<'\n';
+	cout<<"Number of region lockdown toggles remaining: "<<region_lockdown_remaining<<'\n';
 }
 
 void Game::movementControlToolTip(const vector<string> &word_list)
 {
-	cout<<"Movement Control Tooltip under construction.\n";
+	vector<State*> not_movement_control_states;
+	for(State *s:state_list)
+	{
+		if(s->isMovementControl()) continue;
+		not_movement_control_states.push_back(s);
+	}
+	if(not_movement_control_states.empty()) cout<<"Every state is under movement control.\n";
+	else 
+	{
+		cout<<"List of states not under movement control: ";
+		for(State *s:not_movement_control_states) cout<<s->getId()<<' ';
+		cout<<'\n';
+	}
+	cout<<"Number of movement control activations remaining: "<<state_movement_control_remaining<<'\n';
 }
 
 void Game::unmovementControlToolTip(const vector<string> &word_list)
 {
-	cout<<"Unmovement Control Tooltip under construction.\n";
+	vector<State*> movement_control_states;
+	for(State *s:state_list)
+	{
+		if(!s->isMovementControl()) continue;
+		movement_control_states.push_back(s);
+	}
+	if(movement_control_states.empty()) cout<<"No state is under movement control.\n";
+	else 
+	{
+		cout<<"List of states under movement control: ";
+		for(State *s:movement_control_states) cout<<s->getId()<<' ';
+		cout<<'\n';
+	}
 }
 
 void Game::displayToolTip(const string &s)
@@ -1061,6 +1106,14 @@ void Game::updateHour() //updates performed at the end of hour, call at end of s
 	if(game_time.toHours()%PATIENT_IGNORE_LIMIT_RECHARGE_TIME==0)
 	{
 		patient_ignore_remaining=getMaxPatientIgnore(game_time);
+	}
+	if(game_time.toHours()%TESTING_KIT_RECHARGE_TIME==0)
+	{
+		testing_kit_limit=getMaxTestingKitUpgrade(game_time);
+	}
+	if(game_time.toHours()%MEDICAL_CAPACITY_RECHARGE_TIME==0)
+	{
+		medical_capacity_limit=getMaxMedicalCapacityUpgrade(game_time);
 	}
 }
 
@@ -1238,7 +1291,6 @@ void Game::displayStats() //displays the current stats
 		infected_count++;
 	}
 	cout<<'\n';
-	cout<<"Overall Stats:\n";
 	cout<<"Budget: $"<<money<<'\n';
 	cout<<"Infected count: "<<infected_count<<'\n';
 	cout<<"Active people: "<<active_list.size()<<'\n';
@@ -1251,6 +1303,8 @@ void Game::displayStats() //displays the current stats
 	cout<<"Region lockdown toggles remaining: "<<region_lockdown_remaining<<"/"<<MAX_REGION_LOCKDOWN<<" (recharges every "<<REGION_LOCKDOWN_RECHARGE_TIME<<" hours)\n";
 	cout<<"State movement control remaining: "<<state_movement_control_remaining<<"/"<<MAX_MOVEMENT_CONTROL<<" (recharges every "<<MOVEMENT_CONTROL_RECHARGE_TIME<<" hours)\n";
 	cout<<"You have ignored "<<getMaxPatientIgnore(game_time)-patient_ignore_remaining<<"/"<<getMaxPatientIgnore(game_time)<<" patients. (resets every "<<PATIENT_IGNORE_LIMIT_RECHARGE_TIME<<" hours)\n";
+	cout<<"Number of testing kit upgrades remaining: "<<testing_kit_limit<<"/"<<getMaxTestingKitUpgrade(game_time)<<" (resets every "<<TESTING_KIT_RECHARGE_TIME<<" hours)\n";
+	cout<<"Number of medical capacity upgrades remaining: "<<medical_capacity_limit<<"/"<<getMaxMedicalCapacityUpgrade(game_time)<<" (resets every "<<MEDICAL_CAPACITY_RECHARGE_TIME<<" hours)\n";
 	cout<<'\n';
 	cout<<"State Stats:\n";
 	for(State *s:state_list)
@@ -1339,21 +1393,21 @@ bool Game::isTestTime()
 
 int Game::getWanderRange(Person *p)
 {
-	//not implemented yet
-	return 10;
+	if(p->getState(*this)->isMovementControl()) return 3;
+	else if(p->getRegion(*this)->isLockDown()) return 5;
+	else if(p->getState(*this)->isLockDown()) return 7;
+	return 11;
 }
 
 int Game::getMerchantWorkRange(Merchant *m)
 {
-	//not implemented yet
 	return WORK_RADIUS*2;
 }
 
 double Game::getInfectionProbability(int visits)
 {
 	double spread_mult = virus.getSpreadMultiplier();
-	//not implemented yet, this is just a placeholder
-	return max(0.0,min(1.0,spread_mult*double(visits)));
+	return max(0.0,min(1.0,spread_mult*double(visits))); //subject to change
 }
 
 

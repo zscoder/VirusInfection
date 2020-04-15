@@ -19,7 +19,7 @@ class Game
 	static const int MAXN = 3055;
 	static const int MAX_MAP_SIZE = 10;
 	static const int AREA_PER_GRID = 250;
-	static const int HOURS_BETWEEN_TESTS = 4;
+	static const int HOURS_BETWEEN_TESTS = 3;
 	static const int WORK_RADIUS = AREA_PER_GRID/5;
 	static const int MIN_START_HR = 6;
 	static const int MAX_START_HR = 8;
@@ -35,7 +35,11 @@ class Game
 	static const int MOVEMENT_CONTROL_RECHARGE_TIME = 18;
 	static const int PATIENT_IGNORE_LIMIT_RECHARGE_TIME = 3; 
 	static const int MAX_SCAN_LIMIT = 500; //max scan limit = 500
-
+	static const int MEDICAL_CAPACITY_RECHARGE_TIME = 4; //resets medical capacity upgrade limit every few hours
+	static const int TESTING_KIT_RECHARGE_TIME = 4; //resets testing kits upgrade limit every few hours
+	static const int TESTING_KIT_COST = 750; //cost to increase testing kits by 1
+	static const int MEDICAL_CAPACITY_COST = 2700; //cost to increase medical cap by 1
+	
 	private:
 	//Main variables
 	Grid board = Grid(MAXN,MAXN);
@@ -59,7 +63,9 @@ class Game
 	Time game_time; //time in game
 	Time time_limit = Time(int(1e8),int(1e8)); //time limit
 	int dead_limit = int(1e9); //maximum number of deaths allowed
-	int scan_limit; //# of people scanned in each region
+	int scan_limit = 0; //# of people scanned in each region
+	int medical_capacity_limit = 0;
+	int testing_kit_limit = 0;
 	
 	public:	
 	~Game(); //destroy all the objects in the lists, important to prevent memory leak
@@ -110,6 +116,8 @@ class Game
 	static long long getAccuracyUpgradeCost(int level);
 	static long long getScanLimitUpgradeCost(int level);
 	static int getMaxPatientIgnore(const Time &t); //max # of patients that you can ignore
+	static int getMaxMedicalCapacityUpgrade(const Time &t); 
+	static int getMaxTestingKitUpgrade(const Time &t);
 	
 	void stepOn(int x, int y) {board.add(x,y,1);} //new guy steps on (x,y)
 	void resetBoard() {board.resetGrid();} //set board elements to 0
