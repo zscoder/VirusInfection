@@ -25,12 +25,23 @@ class Game
 	static const int MAX_START_HR = 8;
 	static const int MIN_END_HR = 17;
 	static const int MAX_END_HR = 19;
-	
+	static const int MAX_SCANS = 5;
+	static const int SCAN_RECHARGE_TIME = 6; //scan recharge rate
+	static const int MAX_STATE_LOCKDOWN = 5;
+	static const int STATE_LOCKDOWN_RECHARGE_TIME = 12; //state lockdown recharge rate
+	static const int MAX_REGION_LOCKDOWN = 10;
+	static const int REGION_LOCKDOWN_RECHARGE_TIME = 12; //region lockdown recharge rate
+	static const int MAX_MOVEMENT_CONTROL = 2; //deactive doesn't count
+	static const int MOVEMENT_CONTROL_RECHARGE_TIME = 18;
 	private:
 	//Main variables
 	Grid board = Grid(MAXN,MAXN);
 	int row_size=0; 
 	int col_size=0; //we have row_size*col_size regions
+	int scans_remaining=MAX_SCANS; //number of scans remaining
+	int state_lockdown_remaining=MAX_STATE_LOCKDOWN;
+	int region_lockdown_remaining=MAX_REGION_LOCKDOWN;
+	int state_movement_control_remaining=MAX_MOVEMENT_CONTROL;
 	vector<Person*> active_list; //list of active people
 	vector<Person*> detected_list; //list of detected people (including hospitalized)
 	vector<Person*> dead_list; //list of dead people

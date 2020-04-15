@@ -561,6 +561,11 @@ void Game::ignore(const vector<string> &word_list)
 
 void Game::scan(const vector<string> &word_list)
 {
+	if(scans_remaining<=0)
+	{
+		IOHandler::coutc("No more scans available\n", IOHandler::LIGHTRED);
+		return ;
+	}
 	if(word_list.size()!=2)
 	{
 		displayToolTip(word_list[0]); 
@@ -584,6 +589,7 @@ void Game::scan(const vector<string> &word_list)
 		IOHandler::coutc("Invalid region ID.\n", IOHandler::LIGHTRED);
 		return ;
 	}
+	scans_remaining--;
 	current_region->scan(*this);
 }
 
@@ -597,6 +603,11 @@ void Game::lockdown(const vector<string> &word_list)
 	int region = IOHandler::toInt(word_list[1]);
 	if(region<0) //state lockdown
 	{
+		if(state_lockdown_remaining<=0)
+		{
+			IOHandler::coutc("State lockdown toggle unavailable.\n", IOHandler::LIGHTRED);
+			return ;
+		}
 		if(word_list[1].length()!=1)
 		{
 			displayToolTip(word_list[0]); 
@@ -618,9 +629,15 @@ void Game::lockdown(const vector<string> &word_list)
 		}
 		current_state->setLockDown(true);
 		cout<<"State "<<char(toupper(c))<<" is now under lockdown.\n";
+		state_lockdown_remaining--;
 	}
 	else
 	{
+		if(region_lockdown_remaining<=0)
+		{
+			IOHandler::coutc("Region lockdown toggle unavailable.\n", IOHandler::LIGHTRED);
+			return ;
+		}
 		Region *current_region = NULL;
 		for(int i=0;i<row_size;i++)
 		{
@@ -640,6 +657,7 @@ void Game::lockdown(const vector<string> &word_list)
 		}
 		current_region->setLockDown(true);
 		cout<<"Region "<<region<<" is now under lockdown.\n";
+		region_lockdown_remaining--;
 	}
 }
 
@@ -653,6 +671,11 @@ void Game::unlockdown(const vector<string> &word_list)
 	int region = IOHandler::toInt(word_list[1]);
 	if(region<0) //state lockdown
 	{
+		if(state_lockdown_remaining<=0)
+		{
+			IOHandler::coutc("State lockdown toggle unavailable.\n", IOHandler::LIGHTRED);
+			return ;
+		}
 		if(word_list[1].length()!=1)
 		{
 			displayToolTip(word_list[0]); 
@@ -674,9 +697,15 @@ void Game::unlockdown(const vector<string> &word_list)
 		}
 		current_state->setLockDown(false);
 		cout<<"State "<<char(toupper(c))<<" is now not under lockdown.\n";
+		state_lockdown_remaining--;
 	}
 	else
 	{
+		if(region_lockdown_remaining<=0)
+		{
+			IOHandler::coutc("Region lockdown toggle unavailable.\n", IOHandler::LIGHTRED);
+			return ;
+		}
 		Region *current_region = NULL;
 		for(int i=0;i<row_size;i++)
 		{
@@ -696,11 +725,17 @@ void Game::unlockdown(const vector<string> &word_list)
 		}
 		current_region->setLockDown(false);
 		cout<<"Region "<<region<<" is now not under lockdown.\n";
+		region_lockdown_remaining--;
 	}
 }
 
 void Game::movementControl(const vector<string> &word_list)
 {
+	if(state_movement_control_remaining<=0)
+	{
+		IOHandler::coutc("Movement control unavailable.\n", IOHandler::LIGHTRED);
+		return ;
+	}
 	if(word_list.size()!=2)
 	{
 		displayToolTip(word_list[0]); 
@@ -727,6 +762,7 @@ void Game::movementControl(const vector<string> &word_list)
 	}
 	current_state->stateMovementControl(true);
 	cout<<"State "<<char(toupper(c))<<" is now under movement control.\n";
+	state_movement_control_remaining--;
 }
 
 void Game::unmovementControl(const vector<string> &word_list)
@@ -970,6 +1006,23 @@ void Game::updateHour() //updates performed at the end of hour, call at end of s
 		if(!p->isHealthy()) stepOn(p->getPosX(), p->getPosY()); //infect area
 	}
 	game_time.increase(); //update game time
+	//update game constants
+	if(game_time.toHours()%SCAN_RECHARGE_TIME==0)
+	{
+		scans_remaining=MAX_SCANS;
+	}
+	if(game_time.toHours()%STATE_LOCKDOWN_RECHARGE_TIME==0)
+	{
+		scans_remaining=MAX_STATE_LOCKDOWN;
+	}
+	if(game_time.toHours()%REGION_LOCKDOWN_RECHARGE_TIME==0)
+	{
+		scans_remaining=MAX_REGION_LOCKDOWN;
+	}
+	if(game_time.toHours()%MOVEMENT_CONTROL_RECHARGE_TIME==0)
+	{
+		scans_remaining=MAX_MOVEMENT_CONTROL;
+	}
 }
 
 void Game::displayMap() //displays the map
@@ -1138,7 +1191,11 @@ void Game::displayStats() //displays the current stats
 	cout<<"Detected people: "<<detected_list.size()<<'\n';
 	cout<<"Dead people: "<<dead_list.size()<<'\n';
 	cout<<"Testing accuracy: "<<floor(double(testing_accuracy*100))<<"%\n";
+	cout<<"Scans remaining: "<<scans_remaining<<"/"<<MAX_SCANS<<" (recharges every "<<SCAN_RECHARGE_TIME<<" hours)\n";
 	cout<<"Max tests per scan: "<<scan_limit<<'\n';
+	cout<<"State lockdown toggles remaining: "<<state_lockdown_remaining<<"/"<<MAX_STATE_LOCKDOWN<<" (recharges every "<<STATE_LOCKDOWN_RECHARGE_TIME<<" hours)\n";
+	cout<<"Region lockdown toggles remaining: "<<region_lockdown_remaining<<"/"<<MAX_REGION_LOCKDOWN<<" (recharges every "<<REGION_LOCKDOWN_RECHARGE_TIME<<" hours)\n";
+	cout<<"State movement control remaining: "<<state_movement_control_remaining<<"/"<<MAX_MOVEMENT_CONTROL<<" (recharges every "<<MOVEMENT_CONTROL_RECHARGE_TIME<<" hours)\n";
 	cout<<'\n';
 	cout<<"State Stats:\n";
 	for(State *s:state_list)
@@ -1244,5 +1301,4 @@ double Game::getInfectionProbability(int visits)
 	return max(0.0,min(1.0,spread_mult*double(visits)));
 }
 
-//for game update, remember to let every sick active person step on their current square!
 
