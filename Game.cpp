@@ -1013,15 +1013,15 @@ void Game::updateHour() //updates performed at the end of hour, call at end of s
 	}
 	if(game_time.toHours()%STATE_LOCKDOWN_RECHARGE_TIME==0)
 	{
-		scans_remaining=MAX_STATE_LOCKDOWN;
+		state_lockdown_remaining=MAX_STATE_LOCKDOWN;
 	}
 	if(game_time.toHours()%REGION_LOCKDOWN_RECHARGE_TIME==0)
 	{
-		scans_remaining=MAX_REGION_LOCKDOWN;
+		region_lockdown_remaining=MAX_REGION_LOCKDOWN;
 	}
 	if(game_time.toHours()%MOVEMENT_CONTROL_RECHARGE_TIME==0)
 	{
-		scans_remaining=MAX_MOVEMENT_CONTROL;
+		state_movement_control_remaining=MAX_MOVEMENT_CONTROL;
 	}
 }
 
