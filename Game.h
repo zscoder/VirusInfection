@@ -25,7 +25,7 @@ class Game
 	static const int MAX_START_HR = 8;
 	static const int MIN_END_HR = 17;
 	static const int MAX_END_HR = 19;
-	static const int MAX_SCANS = 5;
+	static const int MAX_SCANS = 4;
 	static const int SCAN_RECHARGE_TIME = 6; //scan recharge rate
 	static const int MAX_STATE_LOCKDOWN = 5;
 	static const int STATE_LOCKDOWN_RECHARGE_TIME = 12; //state lockdown recharge rate
@@ -34,6 +34,8 @@ class Game
 	static const int MAX_MOVEMENT_CONTROL = 2; //deactivate doesn't count
 	static const int MOVEMENT_CONTROL_RECHARGE_TIME = 18;
 	static const int PATIENT_IGNORE_LIMIT_RECHARGE_TIME = 3; 
+	static const int MAX_SCAN_LIMIT = 500; //max scan limit = 500
+
 	private:
 	//Main variables
 	Grid board = Grid(MAXN,MAXN);
@@ -105,6 +107,8 @@ class Game
 	int upgradeTestMax(const State *s);
 	int upgradeMedicalMax(const State *s);
 	int ignoreMax(const State *s);
+	static long long getAccuracyUpgradeCost(int level);
+	static long long getScanLimitUpgradeCost(int level);
 	static int getMaxPatientIgnore(const Time &t); //max # of patients that you can ignore
 	
 	void stepOn(int x, int y) {board.add(x,y,1);} //new guy steps on (x,y)

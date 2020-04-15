@@ -390,8 +390,10 @@ void Game::upgradeAccuracy(const vector<string> &word_list)
 		IOHandler::errorRange(0,maxNumber);
 		return ;
 	}
+	int current_percentage = round(testing_accuracy*100.0);
+	money-=getAccuracyUpgradeCost(number+current_percentage)-getAccuracyUpgradeCost(current_percentage);
+	assert(money>=0);
 	testing_accuracy+=0.01*double(number);
-	money-=300LL*number;
 	cout<<"Testing accuracy is increased by "<<number<<"%.\n";
 	cout<<"Budget remaining: $"<<money<<'\n';
 }
@@ -417,8 +419,8 @@ void Game::upgradeScan(const vector<string> &word_list)
 		IOHandler::errorRange(0,maxNumber);
 		return ;
 	}
+	money-=getScanLimitUpgradeCost(number+scan_limit)-getScanLimitUpgradeCost(scan_limit);
 	scan_limit+=number;
-	money-=500LL*number;
 	cout<<"Scan limit is increased by "<<number<<".\n";
 	cout<<"Budget remaining: $"<<money<<'\n';
 }
@@ -798,13 +800,39 @@ void Game::unmovementControl(const vector<string> &word_list)
 
 int Game::upgradeAccuracyMax()
 {
-	long long remaining_percentage = round((1.0-testing_accuracy)*100.0);
-	return min(remaining_percentage,money/300);
+	int current_percentage = round(testing_accuracy*100.0);
+	long long current_cost = getAccuracyUpgradeCost(current_percentage);
+	for(int i=100;i>=current_percentage;i--)
+	{
+		if(getAccuracyUpgradeCost(i)-current_cost<=money)
+		{
+			return i-current_percentage;
+		}
+	}
+	return 0;
+}
+
+long long Game::getAccuracyUpgradeCost(int level)
+{
+	return (long long)(pow(1.045,double(level))*double(9000)); //1.045^lvl*9000
 }
 
 int Game::upgradeScanMax()
 {
-	return min(100LL,money/500); //random number for now
+	int current_level = scan_limit;
+	int max_level = MAX_SCAN_LIMIT;
+	long long current_cost = getScanLimitUpgradeCost(current_level);
+	while(getScanLimitUpgradeCost(max_level)-current_cost>money)
+	{
+		max_level--;
+	}
+	assert(max_level>=current_level);
+	return max_level-current_level;
+}
+
+long long Game::getScanLimitUpgradeCost(int level)
+{
+	return (long long)(1.49*level*level+1000.0*level);
 }
 
 int Game::upgradeTestMax(const State *s)
@@ -1222,7 +1250,7 @@ void Game::displayStats() //displays the current stats
 	cout<<"State lockdown toggles remaining: "<<state_lockdown_remaining<<"/"<<MAX_STATE_LOCKDOWN<<" (recharges every "<<STATE_LOCKDOWN_RECHARGE_TIME<<" hours)\n";
 	cout<<"Region lockdown toggles remaining: "<<region_lockdown_remaining<<"/"<<MAX_REGION_LOCKDOWN<<" (recharges every "<<REGION_LOCKDOWN_RECHARGE_TIME<<" hours)\n";
 	cout<<"State movement control remaining: "<<state_movement_control_remaining<<"/"<<MAX_MOVEMENT_CONTROL<<" (recharges every "<<MOVEMENT_CONTROL_RECHARGE_TIME<<" hours)\n";
-	cout<<"You have ignored "<<getMaxPatientIgnore(game_time)-patient_ignore_remaining<<"/"<<getMaxPatientIgnore(game_time)<<" patients. (recharges every "<<PATIENT_IGNORE_LIMIT_RECHARGE_TIME<<" hours)\n";
+	cout<<"You have ignored "<<getMaxPatientIgnore(game_time)-patient_ignore_remaining<<"/"<<getMaxPatientIgnore(game_time)<<" patients. (resets every "<<PATIENT_IGNORE_LIMIT_RECHARGE_TIME<<" hours)\n";
 	cout<<'\n';
 	cout<<"State Stats:\n";
 	for(State *s:state_list)
