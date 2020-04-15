@@ -18,8 +18,8 @@ class MainMenu
 	int max_activity_level = 12;
 	double testing_kits_per_region = 1.0;
 	double medical_cap_per_region = 2.0;
-	double min_merchant_salary = 0.01; double max_merchant_salary = 0.025;
-	double min_worker_salary = 0.003; double max_worker_salary = 0.005;
+	double min_merchant_salary = 0.45; double max_merchant_salary = 0.55;
+	double min_worker_salary = 0.15; double max_worker_salary = 0.25;
 	vector<double> typeDistribution = {0.3,0.3,0.4};
 	int initial_scan_limit = 0;
 	Time time_limit = Time(6,23);

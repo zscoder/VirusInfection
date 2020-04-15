@@ -557,6 +557,7 @@ void Game::ignore(const vector<string> &word_list)
 	}
 	current_state->ignoreSickest(number);
 	cout<<number<<" sickest patient(s) in state "<<char(toupper(c))<<" is/are ignored.\n";
+	patient_ignore_remaining-=number;
 }
 
 void Game::scan(const vector<string> &word_list)
@@ -818,7 +819,13 @@ int Game::upgradeMedicalMax(const State *s)
 	
 int Game::ignoreMax(const State *s)
 {
-	return s->getHospitalizedCount();
+	return min(s->getHospitalizedCount(),patient_ignore_remaining);
+}
+
+int Game::getMaxPatientIgnore(const Time &t)
+{
+	int cycle_count = t.toHours()/PATIENT_IGNORE_LIMIT_RECHARGE_TIME;
+	return int(9.4*pow(double(cycle_count),1.6));
 }
 
 void Game::upgradeAccuracyToolTip(const vector<string> &word_list)
@@ -1023,6 +1030,10 @@ void Game::updateHour() //updates performed at the end of hour, call at end of s
 	{
 		state_movement_control_remaining=MAX_MOVEMENT_CONTROL;
 	}
+	if(game_time.toHours()%PATIENT_IGNORE_LIMIT_RECHARGE_TIME==0)
+	{
+		patient_ignore_remaining=getMaxPatientIgnore(game_time);
+	}
 }
 
 void Game::displayMap() //displays the map
@@ -1114,7 +1125,17 @@ void Game::displayMap() //displays the map
 			}
 			IOHandler::coutc("|",text_color); //change color if lockdown
 			if(j==col_size) break;
+			HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+			if(region_list[i][j]->getState()->isMovementControl())
+			{
+				SetConsoleTextAttribute(handle, IOHandler::RED);
+			}
+			else if(region_list[i][j]->getState()->isLockDown())
+			{
+				SetConsoleTextAttribute(handle, IOHandler::LIGHTRED);
+			}
 			cout<<setw(2)<<region_list[i][j]->getState()->getId();
+			SetConsoleTextAttribute(handle, IOHandler::WHITE);
 		}
 		cout<<"\n";
 		for(int j=0;j<=col_size;j++)
@@ -1143,11 +1164,16 @@ void Game::displayMap() //displays the map
 			}
 			IOHandler::coutc("|",text_color); //change color if lockdown
 			if(j==col_size) break;
+			HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+			if(region_list[i][j]->isLockDown())
+			{
+				SetConsoleTextAttribute(handle, IOHandler::LIGHTRED);
+			}
 			cout<<setw(2)<<region_list[i][j]->getId();
+			SetConsoleTextAttribute(handle, IOHandler::WHITE);
 		}
 		cout<<"\n";
 	}
-	IOHandler::coutc("\nMap screen is under construction\n",IOHandler::LIGHTRED);
 }
 
 void Game::displayStats() //displays the current stats
@@ -1196,18 +1222,18 @@ void Game::displayStats() //displays the current stats
 	cout<<"State lockdown toggles remaining: "<<state_lockdown_remaining<<"/"<<MAX_STATE_LOCKDOWN<<" (recharges every "<<STATE_LOCKDOWN_RECHARGE_TIME<<" hours)\n";
 	cout<<"Region lockdown toggles remaining: "<<region_lockdown_remaining<<"/"<<MAX_REGION_LOCKDOWN<<" (recharges every "<<REGION_LOCKDOWN_RECHARGE_TIME<<" hours)\n";
 	cout<<"State movement control remaining: "<<state_movement_control_remaining<<"/"<<MAX_MOVEMENT_CONTROL<<" (recharges every "<<MOVEMENT_CONTROL_RECHARGE_TIME<<" hours)\n";
+	cout<<"You have ignored "<<getMaxPatientIgnore(game_time)-patient_ignore_remaining<<"/"<<getMaxPatientIgnore(game_time)<<" patients. (recharges every "<<PATIENT_IGNORE_LIMIT_RECHARGE_TIME<<" hours)\n";
 	cout<<'\n';
 	cout<<"State Stats:\n";
 	for(State *s:state_list)
 	{
 		cout<<"State "<<s->getId()<<": ";
-		cout<<"Active People: "<<right<<setw(6)<<s->getActiveCount()<<"      ";
+		cout<<"Active People: "<<right<<setw(6)<<s->getActiveCount()<<"/"<<left<<setw(6)<<s->getActiveCount()+s->getDetectedCount()<<"      ";
 		cout<<"Detected People: "<<right<<setw(6)<<s->getDetectedCount()<<"/"<<left<<setw(6)<<s->getActiveCount()+s->getDetectedCount()<<"      ";
 		cout<<"Hospitalized People: "<<right<<setw(6)<<s->getHospitalizedCount()<<"/"<<left<<setw(6)<<s->getMedicalCapacity()<<"      ";
 		cout<<"Testing Cap: "<<right<<setw(6)<<s->getTestingKits();
 		cout<<'\n';
 	}
-	IOHandler::coutc("\nStats screen is under construction\n",IOHandler::LIGHTRED);
 }
 
 void Game::startHour() //starts a new hour (displays new map, stats and etc)
@@ -1215,6 +1241,7 @@ void Game::startHour() //starts a new hour (displays new map, stats and etc)
 	system("cls"); //clear screen
 	clock_t st = clock();
 	displayMap();
+	cout<<"\n\n";
 	displayStats(); 
 	clock_t ed = clock();
 	double time_elapsed = double(ed-st)/double(CLOCKS_PER_SEC);

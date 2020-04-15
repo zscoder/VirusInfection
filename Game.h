@@ -31,8 +31,9 @@ class Game
 	static const int STATE_LOCKDOWN_RECHARGE_TIME = 12; //state lockdown recharge rate
 	static const int MAX_REGION_LOCKDOWN = 10;
 	static const int REGION_LOCKDOWN_RECHARGE_TIME = 12; //region lockdown recharge rate
-	static const int MAX_MOVEMENT_CONTROL = 2; //deactive doesn't count
+	static const int MAX_MOVEMENT_CONTROL = 2; //deactivate doesn't count
 	static const int MOVEMENT_CONTROL_RECHARGE_TIME = 18;
+	static const int PATIENT_IGNORE_LIMIT_RECHARGE_TIME = 3; 
 	private:
 	//Main variables
 	Grid board = Grid(MAXN,MAXN);
@@ -42,6 +43,7 @@ class Game
 	int state_lockdown_remaining=MAX_STATE_LOCKDOWN;
 	int region_lockdown_remaining=MAX_REGION_LOCKDOWN;
 	int state_movement_control_remaining=MAX_MOVEMENT_CONTROL;
+	int patient_ignore_remaining=0;
 	vector<Person*> active_list; //list of active people
 	vector<Person*> detected_list; //list of detected people (including hospitalized)
 	vector<Person*> dead_list; //list of dead people
@@ -103,6 +105,7 @@ class Game
 	int upgradeTestMax(const State *s);
 	int upgradeMedicalMax(const State *s);
 	int ignoreMax(const State *s);
+	static int getMaxPatientIgnore(const Time &t); //max # of patients that you can ignore
 	
 	void stepOn(int x, int y) {board.add(x,y,1);} //new guy steps on (x,y)
 	void resetBoard() {board.resetGrid();} //set board elements to 0
