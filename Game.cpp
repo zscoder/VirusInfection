@@ -839,6 +839,7 @@ long long Game::getScanLimitUpgradeCost(int level)
 
 int Game::upgradeTestMax(const State *s)
 {
+	return min(1LL*testing_kit_limit,money/TESTING_KIT_COST);
 }
 
 int Game::upgradeMedicalMax(const State *s)
