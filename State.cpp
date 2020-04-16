@@ -5,6 +5,11 @@ void State::ignoreSickest(int k) //ignore k sickest patients
 {
 	auto sortbyCure = [](Person *p1, Person *p2) -> bool //sort based on cure hours
 	{
+		if(p1->isDead()!=p2->isDead())
+		{
+			if(p1->isDead()) return true; //dead people is placed at front so that they won't get set as dead 
+			else return false;
+		}
 		return (*p1)<(*p2);
 	};
 	sort(hospitalized_people.rbegin(),hospitalized_people.rend(),sortbyCure);

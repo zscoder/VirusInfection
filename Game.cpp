@@ -849,7 +849,7 @@ int Game::upgradeAccuracyMax()
 
 long long Game::getAccuracyUpgradeCost(int level)
 {
-	return (long long)(pow(1.045,double(level))*double(9000)); //1.045^lvl*9000
+	return (long long)(pow(1.043,double(level))*double(9000)); //1.043^lvl*9000
 }
 
 int Game::upgradeScanMax()
@@ -894,13 +894,13 @@ int Game::getMaxPatientIgnore(const Time &t)
 int Game::getMaxMedicalCapacityUpgrade(const Time &t)
 {
 	int cycle_count = t.toHours()/MEDICAL_CAPACITY_RECHARGE_TIME;
-	return int(4.0*pow(double(cycle_count),1.35) + 15.0*cycle_count);
+	return int(10.0*pow(double(cycle_count),1.35) + 30.0*cycle_count);
 }
 
 int Game::getMaxTestingKitUpgrade(const Time &t)
 {
 	int cycle_count = t.toHours()/TESTING_KIT_RECHARGE_TIME;
-	return int(10.0*pow(double(cycle_count),1.35) + 30.0*cycle_count);
+	return int(24.0*pow(double(cycle_count),1.35) + 75.0*cycle_count);
 }
 	
 void Game::upgradeAccuracyToolTip(const vector<string> &word_list)
@@ -1334,7 +1334,7 @@ void Game::displayStats() //displays the current stats
 	cout<<"Detected people: "<<detected_list.size()<<"/"<<infected_count<<'\n';
 	cout<<"Dead people: "<<dead_list.size()<<'\n';
 	cout<<'\n';
-	cout<<"Testing accuracy: "<<floor(double(testing_accuracy*100))<<"%\n";
+	cout<<"Testing accuracy: "<<fixed<<setprecision(0)<<floor(double(testing_accuracy*100))<<"%\n";
 	cout<<"Scans remaining: "<<scans_remaining<<"/"<<MAX_SCANS<<" (recharge in "<<SCAN_RECHARGE_TIME-(game_time.toHours()%SCAN_RECHARGE_TIME)<<" hour(s))\n";
 	cout<<"Max tests per scan: "<<scan_limit<<'\n';
 	cout<<'\n';
