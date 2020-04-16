@@ -46,6 +46,10 @@ void MainMenu::displaySettings() //settings menu
 	while(true)
 	{
 		system("cls");
+		cout<<"Current Settings:\n";
+		cout<<"Difficulty: "<<difficulty<<'\n';
+		cout<<"Delay between hours: "<<int(min_seconds_between_hour*1000)<<"ms\n";
+		cout<<'\n';
 		cout<<"Which setting do you want to change? (enter the number corresponding to the setting)\n";
 		int choice = IOHandler::askChoices(
 					{"Difficulty",
