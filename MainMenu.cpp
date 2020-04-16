@@ -139,8 +139,8 @@ void MainMenu::changeDifficultyMenu()
 		break;
 		case 3: //insane
 		initial_testing_acc = 0.3;
-		virus = Virus(13,16,5,9,1.8,6,0.0078); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
-		initial_infect = 17;
+		virus = Virus(13,16,5,9,1.8,6,0.0076); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
+		initial_infect = 20;
 		min_activity_level = 9;
 		max_activity_level = 13;
 		testing_kits_per_region = 2.0;
@@ -156,8 +156,8 @@ void MainMenu::changeDifficultyMenu()
 		break;
 		case 4: //hell
 		initial_testing_acc = 0.2;
-		virus = Virus(14,18,5,8,2.1,7,0.0086); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
-		initial_infect = 20;
+		virus = Virus(14,18,5,8,2.1,7,0.0082); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
+		initial_infect = 25;
 		min_activity_level = 9;
 		max_activity_level = 14;
 		testing_kits_per_region = 2.0;
