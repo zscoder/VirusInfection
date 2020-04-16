@@ -1351,6 +1351,11 @@ void Game::displayStats() //displays the current stats
 		cout<<"Testing Cap: "<<right<<setw(6)<<s->getTestingKits();
 		cout<<'\n';
 	}
+	cout<<'\n';
+	if(game_time.toHours()<=2)
+	{
+		IOHandler::coutc("Press any key to activate the control panel.\n", IOHandler::LIGHTGREEN);
+	}
 }
 
 void Game::startHour() //starts a new hour (displays new map, stats and etc)
