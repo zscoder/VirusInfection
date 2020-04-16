@@ -27,12 +27,12 @@ class Game
 	static const int MAX_END_HR = 19;
 	static const int MAX_SCANS = 5;
 	static const int SCAN_RECHARGE_TIME = 6; //scan recharge rate
-	static const int MAX_STATE_LOCKDOWN = 5;
+	static const int MAX_STATE_LOCKDOWN = 4;
 	static const int STATE_LOCKDOWN_RECHARGE_TIME = 12; //state lockdown recharge rate
-	static const int MAX_REGION_LOCKDOWN = 8;
+	static const int MAX_REGION_LOCKDOWN = 6;
 	static const int REGION_LOCKDOWN_RECHARGE_TIME = 12; //region lockdown recharge rate
-	static const int MAX_MOVEMENT_CONTROL = 2; //deactivate doesn't count
-	static const int MOVEMENT_CONTROL_RECHARGE_TIME = 18;
+	static const int MAX_MOVEMENT_CONTROL = 1; //deactivate doesn't count
+	static const int MOVEMENT_CONTROL_RECHARGE_TIME = 15;
 	static const int PATIENT_IGNORE_LIMIT_RECHARGE_TIME = 3; 
 	static const int MAX_SCAN_LIMIT = 500; //max scan limit = 500
 	static const int MEDICAL_CAPACITY_RECHARGE_TIME = 4; //resets medical capacity upgrade limit every few hours
@@ -47,9 +47,9 @@ class Game
 	int row_size=0; 
 	int col_size=0; //we have row_size*col_size regions
 	int scans_remaining=MAX_SCANS; //number of scans remaining
-	int state_lockdown_remaining=MAX_STATE_LOCKDOWN;
-	int region_lockdown_remaining=MAX_REGION_LOCKDOWN;
-	int state_movement_control_remaining=MAX_MOVEMENT_CONTROL;
+	int state_lockdown_remaining=2;
+	int region_lockdown_remaining=3;
+	int state_movement_control_remaining=0;
 	int patient_ignore_remaining=0;
 	vector<Person*> active_list; //list of active people
 	vector<Person*> detected_list; //list of detected people (including hospitalized)
