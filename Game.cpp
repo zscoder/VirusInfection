@@ -1333,12 +1333,15 @@ void Game::displayStats() //displays the current stats
 	cout<<"Active people: "<<active_list.size()<<'\n';
 	cout<<"Detected people: "<<detected_list.size()<<"/"<<infected_count<<'\n';
 	cout<<"Dead people: "<<dead_list.size()<<'\n';
+	cout<<'\n';
 	cout<<"Testing accuracy: "<<floor(double(testing_accuracy*100))<<"%\n";
 	cout<<"Scans remaining: "<<scans_remaining<<"/"<<MAX_SCANS<<" (recharge in "<<SCAN_RECHARGE_TIME-(game_time.toHours()%SCAN_RECHARGE_TIME)<<" hour(s))\n";
 	cout<<"Max tests per scan: "<<scan_limit<<'\n';
+	cout<<'\n';
 	cout<<"State lockdown toggles remaining: "<<state_lockdown_remaining<<"/"<<MAX_STATE_LOCKDOWN<<" (recharge in "<<STATE_LOCKDOWN_RECHARGE_TIME-(game_time.toHours()%STATE_LOCKDOWN_RECHARGE_TIME)<<" hour(s))\n";
 	cout<<"Region lockdown toggles remaining: "<<region_lockdown_remaining<<"/"<<MAX_REGION_LOCKDOWN<<" (recharge in "<<REGION_LOCKDOWN_RECHARGE_TIME-(game_time.toHours()%REGION_LOCKDOWN_RECHARGE_TIME)<<" hour(s))\n";
 	cout<<"State movement control remaining: "<<state_movement_control_remaining<<"/"<<MAX_MOVEMENT_CONTROL<<" (recharge in "<<MOVEMENT_CONTROL_RECHARGE_TIME-(game_time.toHours()%MOVEMENT_CONTROL_RECHARGE_TIME)<<" hour(s))\n";
+	cout<<'\n';
 	cout<<"You have ignored "<<getMaxPatientIgnore(game_time)-patient_ignore_remaining<<"/"<<getMaxPatientIgnore(game_time)<<" patients. (resets in "<<PATIENT_IGNORE_LIMIT_RECHARGE_TIME-(game_time.toHours()%PATIENT_IGNORE_LIMIT_RECHARGE_TIME)<<" hour(s))\n";
 	cout<<"Number of testing kit upgrades remaining: "<<testing_kit_limit<<"/"<<getMaxTestingKitUpgrade(game_time)<<" (resets in "<<TESTING_KIT_RECHARGE_TIME-(game_time.toHours()%TESTING_KIT_RECHARGE_TIME)<<" hour(s))\n";
 	cout<<"Number of medical capacity upgrades remaining: "<<medical_capacity_limit<<"/"<<getMaxMedicalCapacityUpgrade(game_time)<<" (resets in "<<MEDICAL_CAPACITY_RECHARGE_TIME-(game_time.toHours()%MEDICAL_CAPACITY_RECHARGE_TIME)<<" hour(s))\n";

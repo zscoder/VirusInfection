@@ -38,7 +38,7 @@ class Game
 	static const int MEDICAL_CAPACITY_RECHARGE_TIME = 4; //resets medical capacity upgrade limit every few hours
 	static const int TESTING_KIT_RECHARGE_TIME = 4; //resets testing kits upgrade limit every few hours
 	static const int TESTING_KIT_COST = 200; //cost to increase testing kits by 1
-	static const int MEDICAL_CAPACITY_COST = 1250; //cost to increase medical cap by 1
+	static const int MEDICAL_CAPACITY_COST = 600; //cost to increase medical cap by 1
 	
 	private:
 	//Main variables

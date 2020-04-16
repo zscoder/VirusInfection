@@ -118,13 +118,13 @@ void MainMenu::changeDifficultyMenu()
 		break;
 		case 2: //hard
 		initial_testing_acc = 0.35;
-		virus = Virus(9,12,6,9,1.4,5,0.0068); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
+		virus = Virus(9,12,6,9,1.4,5,0.0069); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
 		initial_infect = 15;
 		min_activity_level = 8;
 		max_activity_level = 11;
 		testing_kits_per_region = 2.5;
 		medical_cap_per_region = 1.5;
-		min_merchant_salary = 0.43;  max_merchant_salary = 0.53;
+		min_merchant_salary = 0.42;  max_merchant_salary = 0.52;
 		min_worker_salary = 0.15; max_worker_salary = 0.25;
 		typeDistribution = {0.3,0.3,0.4};
 		initial_scan_limit = 0;
@@ -135,13 +135,13 @@ void MainMenu::changeDifficultyMenu()
 		break;
 		case 3: //insane
 		initial_testing_acc = 0.3;
-		virus = Virus(10,13,6,9,1.5,6,0.0071); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
+		virus = Virus(11,14,5,9,1.5,6,0.0075); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
 		initial_infect = 17;
 		min_activity_level = 8;
 		max_activity_level = 13;
 		testing_kits_per_region = 2.0;
 		medical_cap_per_region = 1.0;
-		min_merchant_salary = 0.42;  max_merchant_salary = 0.52;
+		min_merchant_salary = 0.4;  max_merchant_salary = 0.5;
 		min_worker_salary = 0.13; max_worker_salary = 0.23;
 		typeDistribution = {0.3,0.3,0.4};
 		initial_scan_limit = 0;
@@ -152,13 +152,13 @@ void MainMenu::changeDifficultyMenu()
 		break;
 		case 4: //hell
 		initial_testing_acc = 0.2;
-		virus = Virus(12,16,5,8,2.0,6,0.008); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
+		virus = Virus(13,16,5,8,2.0,6,0.0082); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
 		initial_infect = 21;
 		min_activity_level = 8;
 		max_activity_level = 13;
 		testing_kits_per_region = 2.0;
 		medical_cap_per_region = 1.0;
-		min_merchant_salary = 0.3;  max_merchant_salary = 0.42;
+		min_merchant_salary = 0.27;  max_merchant_salary = 0.42;
 		min_worker_salary = 0.1; max_worker_salary = 0.2;
 		typeDistribution = {0.4,0.2,0.4};
 		initial_scan_limit = 0;
