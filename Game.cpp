@@ -91,6 +91,7 @@ void Game::initGame(int _rows, int _cols, double initial_testing_acc, long long 
 					double min_merchant_salary, double max_merchant_salary,
 					double min_worker_salary, double max_worker_salary,
 					vector<double> typeDistribution, int initial_scan_limit, 
+					const string &difficulty,
 					Time time_limit, int dead_limit, double min_seconds_between_hour) //initalizes a new game. call this whenever we create a new game
 {
 	//initialize variables
@@ -107,6 +108,7 @@ void Game::initGame(int _rows, int _cols, double initial_testing_acc, long long 
 	testing_accuracy = initial_testing_acc;
 	money = initial_money;
 	Game::virus = virus;
+	Game::difficulty = difficulty;
 	scan_limit = initial_scan_limit;
 	Game::time_limit = time_limit;
 	Game::dead_limit = dead_limit;
@@ -213,7 +215,8 @@ map<string,string> Game::command_tooltips = {
 {"umc", "<umc/unmovementcontrol> <stateID>: Disables movement control on state <stateID>. e.g. umc D or umc E"},
 {"unmovementcontrol", "<umc/unmovementcontrol> <stateID>: Disables movement control on state <stateID>. e.g. umc D or umc E"},
 {"q", "<q/query> <command>: Displays additional info on <command>. May contain more than one parameters. e.g. q s or q ut D"},
-{"query", "<q/query> <command>: Displays additional info on <command>. May contain more than one parameters. e.g. q s or q ut D"}
+{"query", "<q/query> <command>: Displays additional info on <command>. May contain more than one parameters. e.g. q s or q ut D"},
+{"quit", "quit: Quits game"}
 };
 
 				
@@ -352,10 +355,10 @@ void Game::processCommand(const string &s) //given a command by the user, perfor
 void Game::upgradeMenu()
 {
 	cout<<"Upgrade Commands:\n";
-	cout<<setw(5)<<"Upgrade Test Accuracy (ua)"<<"        "<<command_tooltips["ua"]<<'\n';
-	cout<<setw(5)<<"Upgrade Scan Limit (us)"<<"        "<<command_tooltips["us"]<<'\n';
-	cout<<setw(5)<<"Upgrade Testing Kits (ut)"<<"        "<<command_tooltips["ut"]<<'\n';
-	cout<<setw(5)<<"Upgrade Medical Capacity (um)"<<"        "<<command_tooltips["um"]<<'\n';
+	cout<<setw(30)<<"Upgrade Test Accuracy (ua)"<<"        "<<command_tooltips["ua"]<<'\n';
+	cout<<setw(30)<<"Upgrade Scan Limit (us)"<<"        "<<command_tooltips["us"]<<'\n';
+	cout<<setw(30)<<"Upgrade Testing Kits (ut)"<<"        "<<command_tooltips["ut"]<<'\n';
+	cout<<setw(30)<<"Upgrade Medical Capacity (um)"<<"        "<<command_tooltips["um"]<<'\n';
 }
 
 void Game::helpMenu()
@@ -363,7 +366,7 @@ void Game::helpMenu()
 	cout<<"Command list:\n";
 	for(auto X:command_tooltips)
 	{
-		if(X.first.length()>=4) continue;
+		if(X.first.length()>=4&&X.first!="quit") continue;
 		cout<<setw(5)<<X.first<<"        "<<X.second<<'\n';
 	}
 }
@@ -964,17 +967,19 @@ void Game::displayToolTip(const string &s)
 	}
 }
 
-void Game::commandPanel() //when user presses any key, switch to command mode until user exits
+bool Game::commandPanel() //when user presses any key, switch to command mode until user exits
 {
-	if(!kbhit()) return ; //only activates when a key is pressed
+	if(!kbhit()) return 0; //only activates when a key is pressed
 	while(true)
 	{
-		cout<<"Enter command (h to display help, e to exit command panel):\n";
+		cout<<"Enter command (h to display help, e to exit command panel, quit to quit game):\n";
 		string s = IOHandler::getInput();
 		vector<string> vec = IOHandler::toWordList(s);
+		if(vec.size()==1&&(vec[0]=="quit")) {return 1;} //exit game
 		if(vec.size()==1&&(vec[0]=="e"||vec[0]=="exit")) break; //exits
 		processCommand(s);
 	}
+	return 0;
 }
 
 void Game::updateHour() //updates performed at the end of hour, call at end of startHour()
@@ -1293,19 +1298,18 @@ void Game::displayStats() //displays the current stats
 	}
 	cout<<'\n';
 	cout<<"Budget: $"<<money<<'\n';
-	cout<<"Infected count: "<<infected_count<<'\n';
 	cout<<"Active people: "<<active_list.size()<<'\n';
-	cout<<"Detected people: "<<detected_list.size()<<'\n';
+	cout<<"Detected people: "<<detected_list.size()<<"/"<<infected_count<<'\n';
 	cout<<"Dead people: "<<dead_list.size()<<'\n';
 	cout<<"Testing accuracy: "<<floor(double(testing_accuracy*100))<<"%\n";
-	cout<<"Scans remaining: "<<scans_remaining<<"/"<<MAX_SCANS<<" (recharges every "<<SCAN_RECHARGE_TIME<<" hours)\n";
+	cout<<"Scans remaining: "<<scans_remaining<<"/"<<MAX_SCANS<<" (recharge in "<<SCAN_RECHARGE_TIME-(game_time.toHours()%SCAN_RECHARGE_TIME)<<" hour(s))\n";
 	cout<<"Max tests per scan: "<<scan_limit<<'\n';
-	cout<<"State lockdown toggles remaining: "<<state_lockdown_remaining<<"/"<<MAX_STATE_LOCKDOWN<<" (recharges every "<<STATE_LOCKDOWN_RECHARGE_TIME<<" hours)\n";
-	cout<<"Region lockdown toggles remaining: "<<region_lockdown_remaining<<"/"<<MAX_REGION_LOCKDOWN<<" (recharges every "<<REGION_LOCKDOWN_RECHARGE_TIME<<" hours)\n";
-	cout<<"State movement control remaining: "<<state_movement_control_remaining<<"/"<<MAX_MOVEMENT_CONTROL<<" (recharges every "<<MOVEMENT_CONTROL_RECHARGE_TIME<<" hours)\n";
-	cout<<"You have ignored "<<getMaxPatientIgnore(game_time)-patient_ignore_remaining<<"/"<<getMaxPatientIgnore(game_time)<<" patients. (resets every "<<PATIENT_IGNORE_LIMIT_RECHARGE_TIME<<" hours)\n";
-	cout<<"Number of testing kit upgrades remaining: "<<testing_kit_limit<<"/"<<getMaxTestingKitUpgrade(game_time)<<" (resets every "<<TESTING_KIT_RECHARGE_TIME<<" hours)\n";
-	cout<<"Number of medical capacity upgrades remaining: "<<medical_capacity_limit<<"/"<<getMaxMedicalCapacityUpgrade(game_time)<<" (resets every "<<MEDICAL_CAPACITY_RECHARGE_TIME<<" hours)\n";
+	cout<<"State lockdown toggles remaining: "<<state_lockdown_remaining<<"/"<<MAX_STATE_LOCKDOWN<<" (recharge in "<<STATE_LOCKDOWN_RECHARGE_TIME-(game_time.toHours()%STATE_LOCKDOWN_RECHARGE_TIME)<<" hour(s))\n";
+	cout<<"Region lockdown toggles remaining: "<<region_lockdown_remaining<<"/"<<MAX_REGION_LOCKDOWN<<" (recharge in "<<REGION_LOCKDOWN_RECHARGE_TIME-(game_time.toHours()%REGION_LOCKDOWN_RECHARGE_TIME)<<" hour(s))\n";
+	cout<<"State movement control remaining: "<<state_movement_control_remaining<<"/"<<MAX_MOVEMENT_CONTROL<<" (recharge in "<<MOVEMENT_CONTROL_RECHARGE_TIME-(game_time.toHours()%MOVEMENT_CONTROL_RECHARGE_TIME)<<" hour(s))\n";
+	cout<<"You have ignored "<<getMaxPatientIgnore(game_time)-patient_ignore_remaining<<"/"<<getMaxPatientIgnore(game_time)<<" patients. (resets in "<<PATIENT_IGNORE_LIMIT_RECHARGE_TIME-(game_time.toHours()%PATIENT_IGNORE_LIMIT_RECHARGE_TIME)<<" hour(s))\n";
+	cout<<"Number of testing kit upgrades remaining: "<<testing_kit_limit<<"/"<<getMaxTestingKitUpgrade(game_time)<<" (resets in "<<TESTING_KIT_RECHARGE_TIME-(game_time.toHours()%TESTING_KIT_RECHARGE_TIME)<<" hour(s))\n";
+	cout<<"Number of medical capacity upgrades remaining: "<<medical_capacity_limit<<"/"<<getMaxMedicalCapacityUpgrade(game_time)<<" (resets in "<<MEDICAL_CAPACITY_RECHARGE_TIME-(game_time.toHours()%MEDICAL_CAPACITY_RECHARGE_TIME)<<" hour(s))\n";
 	cout<<'\n';
 	cout<<"State Stats:\n";
 	for(State *s:state_list)
@@ -1330,7 +1334,8 @@ void Game::startHour() //starts a new hour (displays new map, stats and etc)
 	double time_elapsed = double(ed-st)/double(CLOCKS_PER_SEC);
 	double diff = getMinSecondsBetweenHour()-time_elapsed;
 	if(diff>=0) Sleep(diff*1000.0); //in miliseconds
-	commandPanel(); //check if user uses command panel
+	bool is_exit = commandPanel(); //check if user uses command panel
+	if(is_exit){end_game=true; endGame(-2); return ;}
 	updateHour();
 	int win_condition = checkWinCondition();
 	if(win_condition!=0)
@@ -1339,8 +1344,9 @@ void Game::startHour() //starts a new hour (displays new map, stats and etc)
 	}
 }
 
-int Game::checkWinCondition() //check if the current state ends the game, -1 if lose, 1 if win, 0 if not end
+int Game::checkWinCondition() //check if the current state ends the game, -1 if lose, 1 if win, 0 if not end, -2 if terminated by user
 {
+	if(end_game) return -2; //if game has already been terminated by user
 	int ex_sick = 0;
 	for(Person* p:active_list)
 	{
@@ -1363,6 +1369,12 @@ int Game::checkWinCondition() //check if the current state ends the game, -1 if 
 void Game::endGame(int win_condition) //ends the game and display the user's results
 {
 	system("cls");
+	if(win_condition==-2)
+	{
+		cout<<"Game successfully exited.\n";
+		system("pause");
+		return ;
+	}
 	if(win_condition>0) 
 	{
 		IOHandler::coutc("Congratulations! You won!\n", IOHandler::LIGHTGREEN);
@@ -1372,8 +1384,11 @@ void Game::endGame(int win_condition) //ends the game and display the user's res
 		IOHandler::coutc("You lost to the virus :( Better luck next time!\n", IOHandler::LIGHTRED);
 	}
 	//display game stats
+	if(!difficulty.empty()) cout<<"Difficulty: "<<difficulty<<'\n';
 	cout<<"Number of citizens alive: "<<active_list.size()<<'\n';
-	cout<<"Number of citizens dead: "<<dead_list.size()<<'\n';
+	cout<<"Number of citizens dead: "<<dead_list.size();
+	if(dead_limit<int(1e8)) cout<<"/"<<dead_limit;
+	cout<<'\n';
 	cout<<"Death percentage: "<<fixed<<setprecision(2)<<double(dead_list.size()*100)/double(dead_list.size()+active_list.size()+detected_list.size())<<"%"<<'\n';
 	cout<<"Time elapsed: ";
 	if(game_time.getDay()>=1) 
@@ -1397,7 +1412,7 @@ int Game::getWanderRange(Person *p)
 	if(p->getState(*this)->isMovementControl()) return 3;
 	else if(p->getRegion(*this)->isLockDown()) return 5;
 	else if(p->getState(*this)->isLockDown()) return 7;
-	return 11;
+	return 12;
 }
 
 int Game::getMerchantWorkRange(Merchant *m)

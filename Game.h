@@ -25,11 +25,11 @@ class Game
 	static const int MAX_START_HR = 8;
 	static const int MIN_END_HR = 17;
 	static const int MAX_END_HR = 19;
-	static const int MAX_SCANS = 4;
+	static const int MAX_SCANS = 5;
 	static const int SCAN_RECHARGE_TIME = 6; //scan recharge rate
 	static const int MAX_STATE_LOCKDOWN = 5;
 	static const int STATE_LOCKDOWN_RECHARGE_TIME = 12; //state lockdown recharge rate
-	static const int MAX_REGION_LOCKDOWN = 10;
+	static const int MAX_REGION_LOCKDOWN = 8;
 	static const int REGION_LOCKDOWN_RECHARGE_TIME = 12; //region lockdown recharge rate
 	static const int MAX_MOVEMENT_CONTROL = 2; //deactivate doesn't count
 	static const int MOVEMENT_CONTROL_RECHARGE_TIME = 18;
@@ -37,12 +37,13 @@ class Game
 	static const int MAX_SCAN_LIMIT = 500; //max scan limit = 500
 	static const int MEDICAL_CAPACITY_RECHARGE_TIME = 4; //resets medical capacity upgrade limit every few hours
 	static const int TESTING_KIT_RECHARGE_TIME = 4; //resets testing kits upgrade limit every few hours
-	static const int TESTING_KIT_COST = 750; //cost to increase testing kits by 1
-	static const int MEDICAL_CAPACITY_COST = 2700; //cost to increase medical cap by 1
+	static const int TESTING_KIT_COST = 200; //cost to increase testing kits by 1
+	static const int MEDICAL_CAPACITY_COST = 1250; //cost to increase medical cap by 1
 	
 	private:
 	//Main variables
 	Grid board = Grid(MAXN,MAXN);
+	string difficulty="";
 	int row_size=0; 
 	int col_size=0; //we have row_size*col_size regions
 	int scans_remaining=MAX_SCANS; //number of scans remaining
@@ -66,7 +67,7 @@ class Game
 	int scan_limit = 0; //# of people scanned in each region
 	int medical_capacity_limit = 0;
 	int testing_kit_limit = 0;
-	
+	bool end_game = false; //did user end the game?
 	public:	
 	~Game(); //destroy all the objects in the lists, important to prevent memory leak
 	bool expandState(int x, int y); //expand state at this region
@@ -77,6 +78,7 @@ class Game
 				  double min_merchant_salary, double max_merchant_salary,
 				  double min_worker_salary, double max_worker_salary,
 				  vector<double> typeDistribution, int initial_scan_limit = 0, 
+				  const string &difficulty = "",
 				  Time time_limit = Time(int(1e8),int(1e8)), int dead_limit = int(1e9), double min_seconds_between_hour = 1.0); //initalizes a new game. call this whenever we create a new game
 				  
 	void processCommand(const string &s); //given a command by the user, perform its actions
@@ -121,7 +123,7 @@ class Game
 	
 	void stepOn(int x, int y) {board.add(x,y,1);} //new guy steps on (x,y)
 	void resetBoard() {board.resetGrid();} //set board elements to 0
-	void commandPanel(); //when user presses any key, switch to command mode until user exits
+	bool commandPanel(); //when user presses any key, switch to command mode until user exits
 	void updateHour(); //updates performed at the end of hour, call at end of startHour()
 	void displayMap(); //displays the map
 	void displayStats(); //displays the current stats

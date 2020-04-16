@@ -10,23 +10,26 @@ class MainMenu
 	int cols = 8;
 	double initial_testing_acc = 0.4;
 	long long initial_money = 0;
-	Virus virus = Virus(10,15,8,12,1.0,5,0.004); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
+	Virus virus = Virus(6,10,7,10,1.0,5,0.006); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
 	int state_count = 8;
 	int population_count = 50000;
-	int initial_infect = 12;
-	int min_activity_level = 5;
+	int initial_infect = 13;
+	int min_activity_level = 6;
 	int max_activity_level = 10;
-	double testing_kits_per_region = 1.0;
+	double testing_kits_per_region = 3.0;
 	double medical_cap_per_region = 2.0;
 	double min_merchant_salary = 0.45; double max_merchant_salary = 0.55;
 	double min_worker_salary = 0.15; double max_worker_salary = 0.25;
 	vector<double> typeDistribution = {0.3,0.3,0.4};
 	int initial_scan_limit = 0;
-	Time time_limit = Time(6,23);
-	int dead_limit = 10000;
-	double min_seconds_between_hour = 1.5;
+	string difficulty = "Medium";
+	Time time_limit = Time(13,23);
+	int dead_limit = 15000;
+	double min_seconds_between_hour = 2.0;
 	public:
 	void displayMainMenu(); //main menu
+	void changeDifficultyMenu(); //difficulty menu
+	void changeGameSpeedMenu(); //game speed menu
 	void displaySettings(); //settings menu
 	void displayHelpMenu(); //tutorial menu
 	void displayExitMenu(); //exit menu
