@@ -635,6 +635,11 @@ void Game::lockdown(const vector<string> &word_list)
 			IOHandler::coutc("Invalid state ID.\n", IOHandler::LIGHTRED);
 			return ;
 		}
+		if(current_state->isLockDown())
+		{
+			IOHandler::coutc("Current state is already under lockdown.\n", IOHandler::LIGHTRED);
+			return ;
+		}
 		current_state->setLockDown(true);
 		cout<<"State "<<char(toupper(c))<<" is now under lockdown.\n";
 		state_lockdown_remaining--;
@@ -661,6 +666,11 @@ void Game::lockdown(const vector<string> &word_list)
 		if(current_region==NULL)
 		{
 			IOHandler::coutc("Invalid region ID.\n", IOHandler::LIGHTRED);
+			return ;
+		}
+		if(current_region->isLockDown())
+		{
+			IOHandler::coutc("Current region is already under lockdown.\n", IOHandler::LIGHTRED);
 			return ;
 		}
 		current_region->setLockDown(true);
@@ -703,6 +713,11 @@ void Game::unlockdown(const vector<string> &word_list)
 			IOHandler::coutc("Invalid state ID.\n", IOHandler::LIGHTRED);
 			return ;
 		}
+		if(!current_state->isLockDown())
+		{
+			IOHandler::coutc("Current state is already not under lockdown.\n", IOHandler::LIGHTRED);
+			return ;
+		}
 		current_state->setLockDown(false);
 		cout<<"State "<<char(toupper(c))<<" is now not under lockdown.\n";
 		state_lockdown_remaining--;
@@ -729,6 +744,11 @@ void Game::unlockdown(const vector<string> &word_list)
 		if(current_region==NULL)
 		{
 			IOHandler::coutc("Invalid region ID.\n", IOHandler::LIGHTRED);
+			return ;
+		}
+		if(!current_region->isLockDown())
+		{
+			IOHandler::coutc("Current region is already not under lockdown.\n", IOHandler::LIGHTRED);
 			return ;
 		}
 		current_region->setLockDown(false);
@@ -768,6 +788,11 @@ void Game::movementControl(const vector<string> &word_list)
 		IOHandler::coutc("Invalid state ID.\n", IOHandler::LIGHTRED);
 		return ;
 	}
+	if(current_state->isMovementControl())
+	{
+		IOHandler::coutc("Current state is already under movement control.\n", IOHandler::LIGHTRED);
+		return ;
+	}
 	current_state->stateMovementControl(true);
 	cout<<"State "<<char(toupper(c))<<" is now under movement control.\n";
 	state_movement_control_remaining--;
@@ -797,6 +822,11 @@ void Game::unmovementControl(const vector<string> &word_list)
 	if(current_state==NULL)
 	{
 		IOHandler::coutc("Invalid state ID.\n", IOHandler::LIGHTRED);
+		return ;
+	}
+	if(!current_state->isMovementControl())
+	{
+		IOHandler::coutc("Current state is already not under movement control.\n", IOHandler::LIGHTRED);
 		return ;
 	}
 	current_state->stateMovementControl(false);

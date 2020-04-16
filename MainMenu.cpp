@@ -177,7 +177,8 @@ void MainMenu::changeGameSpeedMenu()
 {
 	cout<<"Current delay between hours: "<<int(min_seconds_between_hour*1000)<<"ms\n";
 	int x = 0;
-	cout<<"Enter new delay (between 1000ms to 4000ms inclusive): "<<(x=IOHandler::getInt(1000,4000))<<'\n';
+	cout<<"Enter new delay (between 1000ms to 4000ms inclusive): ";
+	x=IOHandler::getInt(1000,4000);
 	min_seconds_between_hour = double(x)/double(1000);
 	cout<<"New delay between hours: "<<x<<"ms\n";
 	system("pause");
