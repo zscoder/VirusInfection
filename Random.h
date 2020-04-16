@@ -12,8 +12,9 @@
 #include <conio.h>
 #include <utility>
 #include <algorithm>
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0500
+#if       _WIN32_WINNT < 0x0500
+  #undef  _WIN32_WINNT
+  #define _WIN32_WINNT   0x0500
 #endif
 #include "windows.h"
 
