@@ -122,7 +122,7 @@ void MainMenu::changeDifficultyMenu()
 		break;
 		case 2: //hard
 		initial_testing_acc = 0.35;
-		virus = Virus(11,14,6,9,1.4,5,0.0069); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
+		virus = Virus(11,15,6,9,1.45,5,0.0071); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
 		initial_infect = 15;
 		min_activity_level = 8;
 		max_activity_level = 12;
