@@ -32,8 +32,8 @@ class Game
 	static const int MAX_REGION_LOCKDOWN = 6;
 	static const int REGION_LOCKDOWN_RECHARGE_TIME = 12; //region lockdown recharge rate
 	static const int MAX_MOVEMENT_CONTROL = 1; //deactivate doesn't count
-	static const int MOVEMENT_CONTROL_RECHARGE_TIME = 15;
-	static const int PATIENT_IGNORE_LIMIT_RECHARGE_TIME = 3; 
+	static const int MOVEMENT_CONTROL_RECHARGE_TIME = 16;
+	static const int PATIENT_IGNORE_LIMIT_RECHARGE_TIME = 4; 
 	static const int MAX_SCAN_LIMIT = 500; //max scan limit = 500
 	static const int MEDICAL_CAPACITY_RECHARGE_TIME = 4; //resets medical capacity upgrade limit every few hours
 	static const int TESTING_KIT_RECHARGE_TIME = 4; //resets testing kits upgrade limit every few hours

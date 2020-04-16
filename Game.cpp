@@ -888,7 +888,7 @@ int Game::ignoreMax(const State *s)
 int Game::getMaxPatientIgnore(const Time &t)
 {
 	int cycle_count = t.toHours()/PATIENT_IGNORE_LIMIT_RECHARGE_TIME;
-	return int(9.4*pow(double(cycle_count),1.6));
+	return int(7.4*pow(double(cycle_count),1.7));
 }
 
 int Game::getMaxMedicalCapacityUpgrade(const Time &t)
