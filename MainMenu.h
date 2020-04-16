@@ -22,9 +22,9 @@ class MainMenu
 	double min_worker_salary = 0.15; double max_worker_salary = 0.25;
 	vector<double> typeDistribution = {0.3,0.3,0.4};
 	int initial_scan_limit = 0;
-	string difficulty = "Medium";
+	string difficulty = "Easy";
 	Time time_limit = Time(13,23);
-	int dead_limit = 15000;
+	int dead_limit = 20000;
 	double min_seconds_between_hour = 2.0;
 	public:
 	void displayMainMenu(); //main menu

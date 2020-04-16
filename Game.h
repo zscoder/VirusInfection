@@ -60,7 +60,7 @@ class Game
 	double testing_accuracy; //probability that a person with virus will be tested positive
 	long long money; //current economy status
 	Virus virus;
-	double min_seconds_between_hour = 1.0;
+	double min_seconds_between_hour = 2.0;
 	Time game_time; //time in game
 	Time time_limit = Time(int(1e8),int(1e8)); //time limit
 	int dead_limit = int(1e9); //maximum number of deaths allowed
@@ -68,6 +68,7 @@ class Game
 	int medical_capacity_limit = 0;
 	int testing_kit_limit = 0;
 	bool end_game = false; //did user end the game?
+	bool activated_command_panel = false;
 	public:	
 	~Game(); //destroy all the objects in the lists, important to prevent memory leak
 	bool expandState(int x, int y); //expand state at this region

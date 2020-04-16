@@ -1002,6 +1002,7 @@ bool Game::commandPanel() //when user presses any key, switch to command mode un
 	if(!kbhit()) return 0; //only activates when a key is pressed
 	while(true)
 	{
+		activated_command_panel=1;
 		cout<<"Enter command (h to display help, e to exit command panel, quit to quit game):\n";
 		string s = IOHandler::getInput();
 		vector<string> vec = IOHandler::toWordList(s);
@@ -1296,6 +1297,7 @@ void Game::displayMap() //displays the map
 void Game::displayStats() //displays the current stats
 {
 	//include current time, time to end etc
+	cout<<"Difficulty: "<<difficulty<<'\n';
 	game_time.displayTime();
 	if(time_limit.getHour()<int(1e7))
 	{
@@ -1352,7 +1354,7 @@ void Game::displayStats() //displays the current stats
 		cout<<'\n';
 	}
 	cout<<'\n';
-	if(game_time.toHours()<=2)
+	if(!activated_command_panel)
 	{
 		IOHandler::coutc("Press any key to activate the control panel.\n", IOHandler::LIGHTGREEN);
 	}
