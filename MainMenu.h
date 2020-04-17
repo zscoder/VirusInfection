@@ -18,9 +18,9 @@ class MainMenu
 	int max_activity_level = 10;
 	double testing_kits_per_region = 3.0;
 	double medical_cap_per_region = 2.0;
-	double min_merchant_salary = 0.45; double max_merchant_salary = 0.55;
-	double min_worker_salary = 0.15; double max_worker_salary = 0.25;
-	vector<double> typeDistribution = {0.3,0.3,0.4};
+	double min_merchant_salary = 0.5; double max_merchant_salary = 0.6;
+	double min_worker_salary = 0.2; double max_worker_salary = 0.3;
+	vector<double> typeDistribution = {0.4,0.4,0.2};
 	int initial_scan_limit = 0;
 	string difficulty = "Easy";
 	Time time_limit = Time(13,23);

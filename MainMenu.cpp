@@ -94,9 +94,9 @@ void MainMenu::changeDifficultyMenu()
 		max_activity_level = 10;
 		testing_kits_per_region = 3.0;
 		medical_cap_per_region = 2.0;
-		min_merchant_salary = 0.45;  max_merchant_salary = 0.55;
-		min_worker_salary = 0.15; max_worker_salary = 0.25;
-		typeDistribution = {0.3,0.3,0.4};
+		min_merchant_salary = 0.5;  max_merchant_salary = 0.6;
+		min_worker_salary = 0.2; max_worker_salary = 0.3;
+		typeDistribution = {0.4,0.4,0.2};
 		initial_scan_limit = 0;
 		difficulty = "Easy";
 		time_limit = Time(13,23);
@@ -111,9 +111,9 @@ void MainMenu::changeDifficultyMenu()
 		max_activity_level = 11;
 		testing_kits_per_region = 2.5;
 		medical_cap_per_region = 1.5;
-		min_merchant_salary = 0.43;  max_merchant_salary = 0.53;
-		min_worker_salary = 0.15; max_worker_salary = 0.25;
-		typeDistribution = {0.3,0.3,0.4};
+		min_merchant_salary = 0.48;  max_merchant_salary = 0.55;
+		min_worker_salary = 0.2; max_worker_salary = 0.28;
+		typeDistribution = {0.4,0.4,0.2};
 		initial_scan_limit = 0;
 		difficulty = "Normal";
 		time_limit = Time(12,23);
@@ -122,15 +122,15 @@ void MainMenu::changeDifficultyMenu()
 		break;
 		case 2: //hard
 		initial_testing_acc = 0.35;
-		virus = Virus(11,15,6,9,1.45,5,0.0071); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
+		virus = Virus(11,15,6,9,1.45,5,0.0069); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
 		initial_infect = 15;
 		min_activity_level = 8;
 		max_activity_level = 12;
 		testing_kits_per_region = 2.5;
 		medical_cap_per_region = 1.5;
-		min_merchant_salary = 0.42;  max_merchant_salary = 0.52;
-		min_worker_salary = 0.15; max_worker_salary = 0.25;
-		typeDistribution = {0.3,0.3,0.4};
+		min_merchant_salary = 0.45;  max_merchant_salary = 0.5;
+		min_worker_salary = 0.21; max_worker_salary = 0.25;
+		typeDistribution = {0.4,0.4,0.2};
 		initial_scan_limit = 0;
 		difficulty = "Hard";
 		time_limit = Time(11,23);
@@ -139,15 +139,15 @@ void MainMenu::changeDifficultyMenu()
 		break;
 		case 3: //insane
 		initial_testing_acc = 0.3;
-		virus = Virus(13,16,5,9,1.8,6,0.0076); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
-		initial_infect = 20;
+		virus = Virus(13,16,5,9,1.75,6,0.0072); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
+		initial_infect = 18;
 		min_activity_level = 9;
 		max_activity_level = 13;
 		testing_kits_per_region = 2.0;
 		medical_cap_per_region = 1.0;
-		min_merchant_salary = 0.41;  max_merchant_salary = 0.51;
-		min_worker_salary = 0.14; max_worker_salary = 0.24;
-		typeDistribution = {0.3,0.3,0.4};
+		min_merchant_salary = 0.42;  max_merchant_salary = 0.5;
+		min_worker_salary = 0.17; max_worker_salary = 0.22;
+		typeDistribution = {0.4,0.35,0.25};
 		initial_scan_limit = 0;
 		difficulty = "Insane";
 		time_limit = Time(10,23);
@@ -156,15 +156,15 @@ void MainMenu::changeDifficultyMenu()
 		break;
 		case 4: //hell
 		initial_testing_acc = 0.2;
-		virus = Virus(14,18,5,8,2.1,7,0.0082); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
+		virus = Virus(14,18,5,8,2.1,7,0.0076); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
 		initial_infect = 25;
-		min_activity_level = 9;
+		min_activity_level = 10;
 		max_activity_level = 14;
 		testing_kits_per_region = 2.0;
 		medical_cap_per_region = 1.0;
-		min_merchant_salary = 0.33;  max_merchant_salary = 0.45;
-		min_worker_salary = 0.11; max_worker_salary = 0.21;
-		typeDistribution = {0.4,0.2,0.4};
+		min_merchant_salary = 0.42;  max_merchant_salary = 0.5;
+		min_worker_salary = 0.15; max_worker_salary = 0.2;
+		typeDistribution = {0.35,0.35,0.3};
 		initial_scan_limit = 0;
 		difficulty = "Hell";
 		time_limit = Time(9,23);
