@@ -155,7 +155,7 @@ void MainMenu::changeDifficultyMenu()
 		cout<<"Difficulty set to insane.\n";
 		break;
 		case 4: //hell
-		initial_testing_acc = 0.2;
+		initial_testing_acc = 0.25;
 		virus = Virus(14,18,5,8,2.1,7,0.0076); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
 		initial_infect = 25;
 		min_activity_level = 10;
@@ -163,7 +163,7 @@ void MainMenu::changeDifficultyMenu()
 		testing_kits_per_region = 2.0;
 		medical_cap_per_region = 1.0;
 		min_merchant_salary = 0.42;  max_merchant_salary = 0.5;
-		min_worker_salary = 0.15; max_worker_salary = 0.2;
+		min_worker_salary = 0.17; max_worker_salary = 0.21;
 		typeDistribution = {0.35,0.35,0.3};
 		initial_scan_limit = 0;
 		difficulty = "Hell";
