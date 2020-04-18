@@ -19,6 +19,7 @@ class State
 	char id; //id of state
 	bool lockdown; //is the state under lockdown?
 	bool movement_control; //is the state under movement control
+	int undetected_hours = 0;
 	public:
 	State(int testing_kits, int medical_capacity, char id, bool lockdown=0, bool movement_control=0): testing_kits(testing_kits), medical_capacity(medical_capacity), id(id), lockdown(lockdown), movement_control(movement_control){};
 	bool isLockDown() const {return lockdown;}
@@ -31,6 +32,8 @@ class State
 	int getActiveCount() const {return active_people.size();}
 	int getDetectedCount() const {return detected_people.size();}
 	int getHospitalizedCount() const {return hospitalized_people.size();}
+	int getUndetectedHours() const {return undetected_hours;}
+	void setUndetectedHours(int val) {undetected_hours = val;}
 	char getId() const {return id;}
 	vector<Region*> getRegionList() const {return region_list;}
 	Person* hospitalAt(int id) const {return hospitalized_people[id];}

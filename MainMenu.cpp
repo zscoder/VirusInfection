@@ -1,4 +1,5 @@
 #include "MainMenu.h"
+#include "State.h"
 
 void MainMenu::maximizeWindow()
 {
@@ -88,9 +89,9 @@ void MainMenu::changeDifficultyMenu()
 	{
 		case 0: //easy
 		initial_testing_acc = 0.4;
-		virus = Virus(6,10,7,10,1.0,5,0.006); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
-		initial_infect = 13;
-		min_activity_level = 6;
+		virus = Virus(6,10,7,10,1.0,5,0.0061); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
+		initial_infect = 15;
+		min_activity_level = 7;
 		max_activity_level = 10;
 		testing_kits_per_region = 3.0;
 		medical_cap_per_region = 2.0;
@@ -133,7 +134,7 @@ void MainMenu::changeDifficultyMenu()
 		typeDistribution = {0.4,0.4,0.2};
 		initial_scan_limit = 0;
 		difficulty = "Hard";
-		time_limit = Time(11,23);
+		time_limit = Time(10,23);
 		dead_limit = 12500;
 		cout<<"Difficulty set to hard.\n";
 		break;
@@ -150,13 +151,13 @@ void MainMenu::changeDifficultyMenu()
 		typeDistribution = {0.4,0.35,0.25};
 		initial_scan_limit = 0;
 		difficulty = "Insane";
-		time_limit = Time(10,23);
+		time_limit = Time(7,23);
 		dead_limit = 10000;
 		cout<<"Difficulty set to insane.\n";
 		break;
 		case 4: //hell
 		initial_testing_acc = 0.25;
-		virus = Virus(14,18,5,8,2.1,7,0.0076); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
+		virus = Virus(14,17,5,8,2.0,7,0.0076); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
 		initial_infect = 25;
 		min_activity_level = 10;
 		max_activity_level = 14;
@@ -164,10 +165,10 @@ void MainMenu::changeDifficultyMenu()
 		medical_cap_per_region = 1.0;
 		min_merchant_salary = 0.42;  max_merchant_salary = 0.5;
 		min_worker_salary = 0.17; max_worker_salary = 0.21;
-		typeDistribution = {0.35,0.35,0.3};
+		typeDistribution = {0.4,0.35,0.25};
 		initial_scan_limit = 0;
 		difficulty = "Hell";
-		time_limit = Time(9,23);
+		time_limit = Time(5,23);
 		dead_limit = 6666;
 		cout<<"Difficulty set to hell.\n";
 		break;

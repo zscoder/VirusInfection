@@ -32,6 +32,15 @@ int IOHandler::toInt(const string &s) //returns -INF if fail to convert
 	return ans;
 }
 
+void IOHandler::coutslow(string s, int DELAY)
+{
+	for(int i=0;i<int(s.length());i++)
+	{
+		cout<<s[i];
+		Sleep(DELAY);
+	}
+}
+
 string IOHandler::toString(int x)
 {
 	string s;

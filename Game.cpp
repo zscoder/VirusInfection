@@ -113,6 +113,7 @@ void Game::initGame(int _rows, int _cols, double initial_testing_acc, long long 
 	Game::time_limit = time_limit;
 	Game::dead_limit = dead_limit;
 	Game::min_seconds_between_hour = min_seconds_between_hour;
+	state_list.clear();
 	//initialize states
 	cout<<"Initializing states...\n";
 	char curchar = 'A';
@@ -1013,6 +1014,288 @@ bool Game::commandPanel() //when user presses any key, switch to command mode un
 	return 0;
 }
 
+void Game::autoplay(string s)
+{
+	const int TIME_BETWEEN_MOVES = 10; //AI pauses for this much time between moves (in ms)
+	const int DELAY_BETWEEN_CHAR = 0;
+	for(char &c:s)
+	{
+		if(c>='A'&&c<='Z') c+='a'-'A';
+	}
+	IOHandler::coutslow(s+"\n",DELAY_BETWEEN_CHAR);
+	if(s=="e"||s=="exit") return ;
+	processCommand(s);
+	cout<<"Enter command (h to display help, e to exit command panel, quit to quit game):\n";
+	Sleep(TIME_BETWEEN_MOVES);
+}
+
+bool Game::playAI()
+{
+	const int TIME_BETWEEN_MOVES = 10; //AI pauses for this much time between moves (in ms)
+	const int BAIL_OUT_THRESHOLD = 27000; //largest state must have at least 25k ppl, or else AI quits
+	const int PLAY_START_TIME = 2;
+	const int MIN_TESTING_ACC = 50;
+	const int DELAY_BETWEEN_CHAR = 0;
+	const int MEDICAL_RESERVE = 10000;
+	const int MIN_MEDICAL_CAP = 10;
+	const int SAFE_HOURS = 24;
+	const int STATE_LOCKDOWN_LIMIT = 1; //if >= this many people gets detected, we lockdown the state
+	activated_command_panel=1;
+	cout<<"Enter command (h to display help, e to exit command panel, quit to quit game):\n";
+	Sleep(TIME_BETWEEN_MOVES);
+	bool bailout=false;
+	if(game_time.toHours()<=1)
+	{
+		bailout=true;
+		for(State *s:state_list)
+		{
+			if(s->getActiveCount()>=BAIL_OUT_THRESHOLD)
+			{
+				bailout=false;
+			}
+		}
+	}
+	if(bailout) 
+	{
+		IOHandler::coutslow("quit\n",DELAY_BETWEEN_CHAR);
+		return true;
+	}
+	if(game_time.toHours()>=PLAY_START_TIME)
+	{
+		int mx_state_size=0;
+		State * best_state = NULL;
+		for(State *s:state_list)
+		{
+			if(s->getActiveCount()>=mx_state_size)
+			{
+				mx_state_size = s->getActiveCount();
+				best_state = s;
+			}
+		}
+		assert(best_state!=NULL);
+		if((game_time.toHours()<=PLAY_START_TIME+4)&&!best_state->isLockDown()) //lockdown largest state
+		{
+			autoplay("l "+string(1,best_state->getId()));
+		}
+		//try to do state movement control
+		bool nothing=0;
+		while(state_movement_control_remaining>0&&!nothing)
+		{
+			if(!best_state->isMovementControl())
+			{
+				autoplay("mc "+string(1,best_state->getId()));
+				continue;
+			}
+			State * best_state = NULL;
+			int mx_detected_count=STATE_LOCKDOWN_LIMIT;
+			for(State *s:state_list)
+			{
+				if(s->isMovementControl()) continue;
+				if(s->getDetectedCount()>mx_detected_count)
+				{
+					best_state = s;
+					mx_detected_count = s->getDetectedCount();
+				}
+			}
+			if(best_state!=NULL)
+			{
+				autoplay("mc "+string(1,best_state->getId()));
+			}
+			else nothing=1;
+		}
+		//try to do state lockdown
+		nothing=0;
+		while(state_lockdown_remaining>0&&!nothing)
+		{
+			State * best_state = NULL;
+			int mx_detected_count=STATE_LOCKDOWN_LIMIT;
+			for(State *s:state_list)
+			{
+				if(s->isLockDown()||s->isMovementControl()) continue;
+				if(s->getDetectedCount()>mx_detected_count)
+				{
+					best_state = s;
+					mx_detected_count = s->getDetectedCount();
+				}
+			}
+			if(best_state!=NULL)
+			{
+				autoplay("l "+string(1,best_state->getId()));
+			}
+			else nothing=1;
+		}
+		//try to do region lockdown
+		if(game_time.toHours()>=18)
+		{
+			nothing=0;
+			while(region_lockdown_remaining>3&&!nothing)
+			{
+				Region * best_region = NULL;
+				for(int C=0;C<10000;C++)
+				{
+					int i=Random::getRand(0,row_size-1);
+					int j=Random::getRand(0,col_size-1);
+					if(region_list[i][j]->isLockDown()) continue;
+					best_region = region_list[i][j];
+					if(best_region!=NULL) break;
+				}
+				if(best_region!=NULL)
+				{
+					autoplay("l "+IOHandler::toString(best_region->getId()));
+				}
+				else nothing=1;
+			}
+		}
+		if(game_time.toHours()>=72)
+		{
+			nothing=0;
+			while(state_lockdown_remaining>0&&!nothing)
+			{
+				State * best_state = NULL;
+				for(State *s:state_list)
+				{
+					if(!s->isLockDown()) continue;
+					if(s->getUndetectedHours()>=SAFE_HOURS)
+					{
+						best_state = s;
+						if(s->isMovementControl()) 
+						{
+							autoplay("umc "+string(1,s->getId()));
+						}
+					}
+				}
+				if(best_state!=NULL)
+				{
+					autoplay("ul "+string(1,best_state->getId()));
+				}
+				else nothing=1;
+			}
+		}
+		if(round(testing_accuracy*100)<MIN_TESTING_ACC)
+		{
+			int max_upgrade_levels = min(MIN_TESTING_ACC - int(round(testing_accuracy*100)), upgradeAccuracyMax());
+			if(max_upgrade_levels>0)
+			{
+				autoplay("ua "+IOHandler::toString(max_upgrade_levels));
+			}
+		}
+		for(State *s:state_list)
+		{
+			if(s->getMedicalCapacity()<MIN_MEDICAL_CAP)
+			{
+				int max_med = min(MIN_MEDICAL_CAP - s->getMedicalCapacity(), upgradeMedicalMax(s));
+				if(max_med>0)
+				{
+					autoplay("um "+string(1,s->getId())+" "+IOHandler::toString(max_med));
+				}
+			}
+		}
+		const int MIN_TEST_LIMIT=400;
+		if(best_state->getTestingKits()<MIN_TEST_LIMIT)
+		{
+			long long test_money = max(0LL, money - MEDICAL_RESERVE);
+			int max_tests = min(1LL*testing_kit_limit,test_money/TESTING_KIT_COST);
+			if(max_tests>0)
+			{
+				autoplay("ut "+string(1,best_state->getId())+" "+IOHandler::toString(max_tests));
+			}
+		}
+		else
+		{
+			const int MIN_THRESHOLD_DANGER = 2;
+			long long test_money = max(0LL, money - MEDICAL_RESERVE);
+			vector<State*> dangerous_states;
+			int max_tests = min(1LL*testing_kit_limit,test_money/TESTING_KIT_COST);
+			for(State *s:state_list)
+			{
+				if(s->getDetectedCount()>=MIN_THRESHOLD_DANGER)
+				{
+					dangerous_states.push_back(s);
+				}
+				//autoplay("ut "+string(1,best_state->getId())+" "+IOHandler::toString(max_tests));
+			}
+			if(!dangerous_states.empty())
+			{
+				int quotient = max_tests/int(dangerous_states.size());
+				int remainder = max_tests%int(dangerous_states.size());
+				for(State *s:dangerous_states)
+				{
+					if(remainder>0)
+					{
+						if(quotient+1>0) autoplay("ut "+string(1,s->getId())+" "+IOHandler::toString(quotient+1));
+						remainder--;
+					}
+					else
+					{
+						if(quotient>0) autoplay("ut "+string(1,s->getId())+" "+IOHandler::toString(quotient));
+					}
+				}
+			}
+		}
+		for(State *s:state_list)
+		{
+			int tot_unhospitalized = s->getDetectedCount()-s->getMedicalCapacity(); //# of people who will be unhospitalized
+			int max_med = min(tot_unhospitalized, upgradeMedicalMax(s));
+			if(max_med>0)
+			{
+				autoplay("um "+string(1,s->getId())+" "+IOHandler::toString(max_med));
+			}
+		}
+		for(State *s:state_list)
+		{
+			int tot_unhospitalized = s->getDetectedCount()-s->getMedicalCapacity(); //# of people who will be unhospitalized
+			int max_ignore = min(tot_unhospitalized, ignoreMax(s));
+			if(max_ignore>0)
+			{
+				autoplay("i "+string(1,s->getId())+" "+IOHandler::toString(max_ignore));
+			}
+		}
+		if(best_state->getTestingKits()<MIN_TEST_LIMIT)
+		{
+			long long test_money = max(0LL, money);
+			int max_tests = min(1LL*testing_kit_limit,test_money/TESTING_KIT_COST);
+			if(max_tests>0)
+			{
+				autoplay("ut "+string(1,best_state->getId())+" "+IOHandler::toString(max_tests));
+			}
+		}
+		else
+		{
+			const int MIN_THRESHOLD_DANGER = 5;
+			long long test_money = max(0LL, money);
+			vector<State*> dangerous_states;
+			int max_tests = min(1LL*testing_kit_limit,test_money/TESTING_KIT_COST);
+			for(State *s:state_list)
+			{
+				if(s->getDetectedCount()>=MIN_THRESHOLD_DANGER)
+				{
+					dangerous_states.push_back(s);
+				}
+				//autoplay("ut "+string(1,best_state->getId())+" "+IOHandler::toString(max_tests));
+			}
+			if(!dangerous_states.empty())
+			{
+				int quotient = max_tests/int(dangerous_states.size());
+				int remainder = max_tests%int(dangerous_states.size());
+				for(State *s:dangerous_states)
+				{
+					if(remainder>0)
+					{
+						if(quotient+1>0) autoplay("ut "+string(1,s->getId())+" "+IOHandler::toString(quotient+1));
+						remainder--;
+					}
+					else
+					{
+						if(quotient>0) autoplay("ut "+string(1,s->getId())+" "+IOHandler::toString(quotient));
+					}
+				}
+			}
+		}
+	}
+	autoplay("e");
+	return false;
+}
+
 void Game::updateHour() //updates performed at the end of hour, call at end of startHour()
 {
 	vector<Person*> new_active_list; //list of active people
@@ -1151,6 +1434,18 @@ void Game::updateHour() //updates performed at the end of hour, call at end of s
 	if(game_time.toHours()%MEDICAL_CAPACITY_RECHARGE_TIME==0)
 	{
 		medical_capacity_limit=getMaxMedicalCapacityUpgrade(game_time);
+	}
+	//update the duration that a state has 0 detected cases
+	for(State *s:state_list)
+	{
+		if(s->getDetectedCount()>0)
+		{
+			s->setUndetectedHours(0);
+		}
+		else
+		{
+			s->setUndetectedHours(s->getUndetectedHours()+1);
+		}
 	}
 }
 
@@ -1374,7 +1669,15 @@ void Game::startHour() //starts a new hour (displays new map, stats and etc)
 	double time_elapsed = double(ed-st)/double(CLOCKS_PER_SEC);
 	double diff = getMinSecondsBetweenHour()-time_elapsed;
 	if(diff>=0) Sleep(diff*1000.0); //in miliseconds
-	bool is_exit = commandPanel(); //check if user uses command panel
+	bool is_exit = false;
+	if(!is_ai)
+	{
+		is_exit = commandPanel(); //check if user uses command panel
+	}
+	else //AI performs actions!
+	{
+		is_exit = playAI();
+	}
 	if(is_exit){end_game=true; endGame(-2); return ;}
 	updateHour();
 	int win_condition = checkWinCondition();

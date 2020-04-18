@@ -31,6 +31,7 @@ class IOHandler
 	static vector<string> toWordList(const string &s); //converts user input into a list of words
 	static int askChoices(const vector<string> &choices); //ask options
 	static int getInt(int l, int r); //get integer input in range [l,r]
+	static void coutslow(string s, int DELAY=100);
 	static void errorRange(int l, int r); //print error message for integer not in range [l,r]
 };
 #endif

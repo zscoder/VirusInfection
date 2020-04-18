@@ -69,6 +69,7 @@ class Game
 	int testing_kit_limit = 0;
 	bool end_game = false; //did user end the game?
 	bool activated_command_panel = false;
+	bool is_ai = false; //try to create an AI to play the game
 	public:	
 	~Game(); //destroy all the objects in the lists, important to prevent memory leak
 	bool expandState(int x, int y); //expand state at this region
@@ -121,6 +122,9 @@ class Game
 	static int getMaxPatientIgnore(const Time &t); //max # of patients that you can ignore
 	static int getMaxMedicalCapacityUpgrade(const Time &t); 
 	static int getMaxTestingKitUpgrade(const Time &t);
+	//try to create an AI to play
+	bool playAI();
+	void autoplay(string s);
 	
 	void stepOn(int x, int y) {board.add(x,y,1);} //new guy steps on (x,y)
 	void resetBoard() {board.resetGrid();} //set board elements to 0
@@ -139,6 +143,7 @@ class Game
 	int getBoardCount(int x, int y) const {return board.at(x,y);}
 	int getRowSize() const {return row_size;}
 	int getColSize() const {return col_size;}
+	vector<State*> getStateList() const {return state_list;}
 	bool isValidRegion(int x, int y) const {return (x>=0&&x<row_size&&y>=0&&y<col_size);}
 	double getMinSecondsBetweenHour() const {return min_seconds_between_hour;}
 	double getTestingAccuracy() const {return testing_accuracy;}
