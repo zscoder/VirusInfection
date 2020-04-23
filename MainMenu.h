@@ -10,11 +10,11 @@ class MainMenu
 	int cols = 8;
 	double initial_testing_acc = 0.4;
 	long long initial_money = 0;
-	Virus virus = Virus(6,10,7,10,1.0,5,0.006); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
+	Virus virus = Virus(6,10,7,10,1.0,5,0.0061); //min_incubation, max_incubation, min_lethality, max_lethality, cure_difficulty, min_cure_hours, spread_difficulty
 	int state_count = 8;
 	int population_count = 50000;
-	int initial_infect = 13;
-	int min_activity_level = 6;
+	int initial_infect = 15;
+	int min_activity_level = 7;
 	int max_activity_level = 10;
 	double testing_kits_per_region = 3.0;
 	double medical_cap_per_region = 2.0;
