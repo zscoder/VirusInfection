@@ -232,7 +232,12 @@ void MainMenu::displayHelpMenu() //tutorial menu
 void MainMenu::displayCredits() //credits menu 
 {
 	system("cls");
-	cout<<"Credits will be added later.\n";
+	cout<<"This project is brought to you by:\n";
+	cout<<"Yeoh Zi Song\n";
+	cout<<"Tan Wei Jun\n";
+	cout<<"Hing Wan Yee\n";
+	cout<<"Lim Shi Qi\n";
+	cout<<"Kwok Wen Chi\n";
 	system("pause");
 }
 

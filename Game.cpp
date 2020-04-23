@@ -1728,7 +1728,7 @@ void Game::endGame(int win_condition) //ends the game and display the user's res
 	}
 	//display game stats
 	if(!difficulty.empty()) cout<<"Difficulty: "<<difficulty<<'\n';
-	cout<<"Number of citizens alive: "<<active_list.size()<<'\n';
+	cout<<"Number of citizens alive: "<<active_list.size()+detected_list.size()<<'\n';
 	cout<<"Number of citizens dead: "<<dead_list.size();
 	if(dead_limit<int(1e8)) cout<<"/"<<dead_limit;
 	cout<<'\n';
