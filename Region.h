@@ -1,3 +1,7 @@
+/*
+ * A class that handles regions in our game.
+ */
+
 #include "Random.h"
 #include "Person.h"
 

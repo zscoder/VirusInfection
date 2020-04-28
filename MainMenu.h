@@ -1,3 +1,7 @@
+/*
+ * A class that handles a main menu in our game
+ */
+
 #include "Game.h"
 
 #ifndef MAIN_MENU_H
@@ -5,7 +9,7 @@
 class MainMenu
 {
 	private:
-	//contains settings to be added later
+	//contains current settings
 	int rows = 8;
 	int cols = 8;
 	double initial_testing_acc = 0.4;

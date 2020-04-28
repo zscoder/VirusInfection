@@ -1,3 +1,7 @@
+/*
+ * A class that handles the virus in our game
+ */
+ 
 #include "Random.h"
 
 #ifndef VIRUS_H

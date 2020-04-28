@@ -1,3 +1,7 @@
+/*
+ * A class that describes one type of person in our map: Worker
+ */
+
 #include "Person.h"
 
 #ifndef WORKER_H

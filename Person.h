@@ -1,3 +1,7 @@
+/*
+ * A class that describes a person in our game
+ */
+
 #include "Random.h"
 #include "Health.h"
 
@@ -41,6 +45,7 @@ class Person
 	virtual ~Person(){}; //virtual destructor
 	Health getHealth() const {return health_state;}
 	
+	//Getter Functions
 	bool isDead() const {return health_state.isDead();}
 	bool isHealthy() const {return health_state.isHealthy();}
 	bool isDetected() const {return detected;}

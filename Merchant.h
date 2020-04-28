@@ -1,3 +1,7 @@
+/*
+ * A class that describes one type of person in our map: Merchant
+ */
+
 #include "Person.h"
 
 #ifndef MERCHANT_H

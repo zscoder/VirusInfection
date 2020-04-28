@@ -1,3 +1,7 @@
+/*
+ * A class that handles the health state of people in our game
+ */
+
 #include "Virus.h"
 #include "Random.h"
 

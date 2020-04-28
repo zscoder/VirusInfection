@@ -1,3 +1,7 @@
+/*
+ * Class that implements gametime-related functions
+ */
+
 #include "Random.h"
 
 #ifndef TIME_H
@@ -11,6 +15,7 @@ class Time
 	int day,hour;
 	public:
 	Time(int _day=0, int _hour=0): day(_day),hour(_hour){};
+	//Basic Functions
 	int getDay() const {return day;}
 	bool isWeekday() const {return (day%DAYS_PER_WEEK>=1&&day%DAYS_PER_WEEK<=5);}
 	bool isWeekend() const {return (!isWeekday());}
@@ -21,6 +26,7 @@ class Time
 	void setHour(int _hour) {hour=_hour;}
 	void const displayTime(); //display current time
 	static Time calcRemaining(const Time &curtime, const Time &endtime); 
+	//Time operators
 	bool operator < (const Time &r) //is current time less than compared time?
 	{
 		if(day!=r.day) return day<r.day;

@@ -1,3 +1,7 @@
+/*
+ * An auxillary class that handles basic I/O for our game
+ */
+
 #include <iostream>
 #include <vector>
 #include <cmath>

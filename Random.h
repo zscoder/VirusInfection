@@ -1,3 +1,7 @@
+/*
+ * A class that implements the random number generator used in our game.
+ */
+
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -12,7 +16,7 @@
 #include <conio.h>
 #include <utility>
 #include <algorithm>
-#if       _WIN32_WINNT < 0x0500
+#if       _WIN32_WINNT < 0x0500 //used for auto-maximizing screen
   #undef  _WIN32_WINNT
   #define _WIN32_WINNT   0x0500
 #endif

@@ -1,3 +1,7 @@
+/*
+ * Class that implements grid-related functions
+ */
+
 #include "Random.h"
 
 using namespace std;

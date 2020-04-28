@@ -1,3 +1,7 @@
+/*
+ * A class that handles a type of person in our game: Wanderer
+ */
+
 #include "Person.h"
 
 #ifndef WANDERER_H

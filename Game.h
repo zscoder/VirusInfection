@@ -1,3 +1,7 @@
+/*
+ * A class that handles the game instance
+ */
+
 #include "Grid.h"
 #include "Random.h"
 #include "Time.h"
@@ -70,6 +74,7 @@ class Game
 	bool end_game = false; //did user end the game?
 	bool activated_command_panel = false;
 	bool is_ai = false; //try to create an AI to play the game
+	
 	public:	
 	~Game(); //destroy all the objects in the lists, important to prevent memory leak
 	bool expandState(int x, int y); //expand state at this region
@@ -89,6 +94,7 @@ class Game
 	void upgradeMenu(); //call this when user goes to upgrade menu
 	void helpMenu(); //call this when user goes to help menu
 	void displayToolTip(const string &s);
+	
 	//Functions related to the user commands
 	void upgradeAccuracy(const vector<string> &word_list);
 	void upgradeScan(const vector<string> &word_list);
@@ -100,6 +106,7 @@ class Game
 	void unlockdown(const vector<string> &word_list);
 	void movementControl(const vector<string> &word_list);
 	void unmovementControl(const vector<string> &word_list);
+	
 	//Tooltips related to the user commands
 	void upgradeAccuracyToolTip(const vector<string> &word_list);
 	void upgradeScanToolTip(const vector<string> &word_list);
@@ -111,6 +118,7 @@ class Game
 	void unlockdownToolTip(const vector<string> &word_list);
 	void movementControlToolTip(const vector<string> &word_list);
 	void unmovementControlToolTip(const vector<string> &word_list);
+	
 	//Maximum limit for user commands
 	int upgradeAccuracyMax(); 
 	int upgradeScanMax();
@@ -122,10 +130,12 @@ class Game
 	static int getMaxPatientIgnore(const Time &t); //max # of patients that you can ignore
 	static int getMaxMedicalCapacityUpgrade(const Time &t); 
 	static int getMaxTestingKitUpgrade(const Time &t);
+	
 	//try to create an AI to play
 	bool playAI();
 	void autoplay(string s);
 	
+	//game checking functions
 	void stepOn(int x, int y) {board.add(x,y,1);} //new guy steps on (x,y)
 	void resetBoard() {board.resetGrid();} //set board elements to 0
 	bool commandPanel(); //when user presses any key, switch to command mode until user exits
@@ -136,6 +146,7 @@ class Game
 	int checkWinCondition(); //check if the current state ends the game (-1 = lose, 1 = win, 0 = not end)
 	void endGame(int win_condition); //ends the game and display the user's results, -1 = lose, 1 = win
 	
+	//getter/setter functions
 	Virus getVirus() const {return virus;}
 	double getInfectionProbability(int visits); //get the infection probability based on # of visits
 	Region* getRegion(int x, int y) const {return region_list[x][y];}

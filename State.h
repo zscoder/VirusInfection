@@ -1,3 +1,7 @@
+/*
+ * A class that handles a state in the game
+ */
+
 #include "Random.h"
 #include "Person.h"
 #include "Region.h"
@@ -22,6 +26,8 @@ class State
 	int undetected_hours = 0;
 	public:
 	State(int testing_kits, int medical_capacity, char id, bool lockdown=0, bool movement_control=0): testing_kits(testing_kits), medical_capacity(medical_capacity), id(id), lockdown(lockdown), movement_control(movement_control){};
+	
+	//Getter Functions
 	bool isLockDown() const {return lockdown;}
 	bool isMovementControl() const {return movement_control;}
 	bool isFull() const {return (int(hospitalized_people.size())>=medical_capacity);}
@@ -40,6 +46,8 @@ class State
 	vector<Person*> getDetectedList() const {return detected_people;}
 	vector<Person*> getActiveList() const {return active_people;}
 	int numberOfPatients() const {return hospitalized_people.size();}	
+	
+	//Setter Functions
 	void addTestingKits(int kit_count) {testing_kits+=kit_count;}
 	void addMedicalCap(int cap_add) {medical_capacity+=cap_add;}
 	void addRegion(Region *r) {region_list.push_back(r);}

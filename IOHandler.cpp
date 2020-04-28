@@ -1,14 +1,14 @@
 #include "IOHandler.h"
 #include <climits>
 
-string IOHandler::getInput(string message)
+string IOHandler::getInput(string message) //reads string as message
 {
 	if(!message.empty()) cout<<message<<'\n';
 	string s; getline(cin,s);
 	return s;
 }
 
-void IOHandler::coutc(string output, colors color)
+void IOHandler::coutc(string output, colors color) //outputs text in a certain color
 {
    HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
    SetConsoleTextAttribute(handle, color);
@@ -32,7 +32,7 @@ int IOHandler::toInt(const string &s) //returns -INF if fail to convert
 	return ans;
 }
 
-void IOHandler::coutslow(string s, int DELAY)
+void IOHandler::coutslow(string s, int DELAY) //outputs text with a certain delay between characters
 {
 	for(int i=0;i<int(s.length());i++)
 	{
@@ -41,7 +41,7 @@ void IOHandler::coutslow(string s, int DELAY)
 	}
 }
 
-string IOHandler::toString(int x)
+string IOHandler::toString(int x) //converts integer to string
 {
 	string s;
 	if(x<0) s+="-";
@@ -57,7 +57,7 @@ string IOHandler::toString(int x)
 	return s;
 }
 
-int IOHandler::getInt(int l, int r)
+int IOHandler::getInt(int l, int r) //reads an integer of range [l,r], catching exceptions
 {
 	string s = getInput();
 	int tmp = toInt(s);
@@ -72,7 +72,7 @@ int IOHandler::getInt(int l, int r)
 	}
 }
 
-int IOHandler::askChoices(const vector<string> &choices)
+int IOHandler::askChoices(const vector<string> &choices) //prompts to user to select a choice from a list
 {
 	for(int i=0;i<int(choices.size());i++)
 	{
@@ -84,7 +84,7 @@ int IOHandler::askChoices(const vector<string> &choices)
 	return choice-1;
 }
 
-vector<string> IOHandler::toWordList(const string &s)
+vector<string> IOHandler::toWordList(const string &s) //converts a string into a list of words
 {
 	string cur="";
 	vector<string> result;
@@ -105,7 +105,7 @@ vector<string> IOHandler::toWordList(const string &s)
 	return result;
 }
 
-void IOHandler::errorRange(int l, int r)
+void IOHandler::errorRange(int l, int r) //error message for invalid range input
 {
 	coutc("Error: Integer should be in the range ["+toString(l)+", "+toString(r)+"].\n", LIGHTRED);
 }

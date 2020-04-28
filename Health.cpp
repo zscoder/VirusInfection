@@ -34,7 +34,7 @@ void Health::update() //update status after one hour
 	}
 }
 
-void Health::cure()
+void Health::cure() //change patient to hospitalized mode
 {
 	sick_hours=max(sick_hours,0);
 	cure_hours+=(int)(cure_difficulty*double(sick_hours)); //start to cure

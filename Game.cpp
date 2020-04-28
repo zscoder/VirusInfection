@@ -218,7 +218,7 @@ map<string,string> Game::command_tooltips = {
 {"q", "<q/query> <command>: Displays additional info on <command>. May contain more than one parameters. e.g. q s or q ut D"},
 {"query", "<q/query> <command>: Displays additional info on <command>. May contain more than one parameters. e.g. q s or q ut D"},
 {"quit", "quit: Quits game"}
-};
+}; //tooltips
 
 				
 void Game::processCommand(const string &s) //given a command by the user, perform its actions
@@ -417,7 +417,6 @@ void Game::upgradeScan(const vector<string> &word_list)
 		displayToolTip(word_list[0]);
 		return ;
 	}
-	//under construction
 	if(number>maxNumber)
 	{
 		IOHandler::errorRange(0,maxNumber);
@@ -463,7 +462,6 @@ void Game::upgradeTest(const vector<string> &word_list)
 		displayToolTip(word_list[0]);
 		return ;
 	}
-	//under construction
 	if(number>maxNumber)
 	{
 		IOHandler::errorRange(0,maxNumber);
@@ -510,7 +508,6 @@ void Game::upgradeMedical(const vector<string> &word_list)
 		displayToolTip(word_list[0]);
 		return ;
 	}
-	//under construction
 	if(number>maxNumber)
 	{
 		IOHandler::errorRange(0,maxNumber);
@@ -557,7 +554,6 @@ void Game::ignore(const vector<string> &word_list)
 		displayToolTip(word_list[0]);
 		return ;
 	}
-	//under construction
 	if(number>maxNumber)
 	{
 		IOHandler::errorRange(0,maxNumber);
